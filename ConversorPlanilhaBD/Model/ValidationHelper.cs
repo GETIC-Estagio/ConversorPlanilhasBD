@@ -132,10 +132,9 @@ namespace ConversorPlanilhaBD.Model
         }
 
         //Verifica que é o texto não é vazio
-        public static bool VerificarTexto(string texto)
+        public static void VerificarTexto(string texto)
         {
             if (string.IsNullOrEmpty(texto)) throw new ArgumentException("O campo não pode ser vazio");
-            return true;
         }
 
         //Verifica se o cnpj é valido 
