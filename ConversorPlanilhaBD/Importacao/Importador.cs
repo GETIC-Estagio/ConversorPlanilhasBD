@@ -401,7 +401,7 @@ namespace ConversorPlanilhaBD.Importacao
             );
         }
 
-        
+
         //Metodo para Importar as Feiras
         private void ImportarFeiras(ResultadoImportacao resultado)
         {
@@ -413,7 +413,7 @@ namespace ConversorPlanilhaBD.Importacao
             foreach (var row in linhas)
             {
                 int numeroLinha = row.RowNumber();
-                bool erroNaLinha = false;            
+                bool erroNaLinha = false;
 
                 //Cria Modelos vazios para inserir
                 //Mesmo que de problema em tudo
@@ -426,51 +426,75 @@ namespace ConversorPlanilhaBD.Importacao
                 // ============================================================
                 // 1. RESPONSÁVEL DA SUBMISSÃO
                 // ============================================================
+
+                string nome = ObterValor(row, ColunasFeira.NomeCompleto);
+                string sobrenome = ObterValor(row, ColunasFeira.Sobrenome);
+                string? nomeCompleto = $"{nome} {sobrenome}".Trim();
+
                 try
                 {
-                    string nome = ObterValor(row, ColunasFeira.NomeCompleto);
-                    string sobrenome = ObterValor(row, ColunasFeira.Sobrenome);
-                    string nomeCompleto = $"{nome} {sobrenome}".Trim();
+                    ValidationHelper.VerificarNome(nomeCompleto);
+                }
+                catch (ArgumentException ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Nome Responsável", ex);
+                    erroNaLinha = true;
+                    nomeCompleto = null;
+                    continue;
+                }
 
+                if (nomeCompleto != null)
+                {
                     // Evita duplicados na memória buscando pelo nome completo
                     responsavelSubmissao = _responsaveis.FirstOrDefault(r =>
                         ValidationHelper.VerificarMesmoNome(r.Nome, nomeCompleto));
+                }
 
-                    if (responsavelSubmissao == null)
+                if (responsavelSubmissao == null)
+                {
+                    string? idGenero = ObterValor(row, ColunasFeira.IdentidadeGenero);
+                    try
                     {
-                        responsavelSubmissao = new Responsavel(
-                            nomeCompleto,
-                            ObterValor(row, ColunasFeira.IdentidadeGenero),
-                            ObterValor(row, ColunasFeira.RacaPessoa),
-                            ObterValor(row, ColunasFeira.DataNascimento),
-                            ObterValor(row, ColunasFeira.EhProfessor),
-                            ObterValor(row, ColunasFeira.NivelEnsinoResponsavel),
-                            ObterValor(row, ColunasFeira.ParticipouCienciaJovem),
-                            ObterValor(row, ColunasFeira.ExperienciaFeiras),
-                            ObterValor(row, ColunasFeira.Recomendacao)
-                        );
-                        _responsaveis.Add(responsavelSubmissao);
+                        ValidationHelper.VerificarTexto(idGenero);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Identidade Gênero Responsável", ex);
+                        erroNaLinha = true;
+                        idGenero = null;
+                        continue;
                     }
 
-                    // Alimenta os contatos na RAM (as listas serão limpas no SalvarNoBancoAsync)
-                    string emailResp = ObterValor(row, ColunasFeira.EnderecoEmailResponsavel);
-                    if (!responsavelSubmissao.Email.Any(e => e.Endereco == emailResp))
-                        responsavelSubmissao.Email.Add(new Email(emailResp));
 
-                    string telResp = ObterValor(row, ColunasFeira.TelefoneCelular);
-                    if (!responsavelSubmissao.Telefone.Any(t => t.Numero == telResp))
-                        responsavelSubmissao.Telefone.Add(new Telefone(telResp));
 
-                    string docResp = ObterValor(row, ColunasProjetos.DocumentoIdentificacaoResponsavel);
-                    if (!responsavelSubmissao.Identidade.Any(i => i.Numero == docResp))
-                        responsavelSubmissao.Identidade.Add(new Identidade(docResp));
+
+                    responsavelSubmissao = new Responsavel(
+                        nomeCompleto,
+                        idGenero,
+                        ObterValor(row, ColunasFeira.RacaPessoa),
+                        ObterValor(row, ColunasFeira.DataNascimento),
+                        ObterValor(row, ColunasFeira.EhProfessor),
+                        ObterValor(row, ColunasFeira.NivelEnsinoResponsavel),
+                        ObterValor(row, ColunasFeira.ParticipouCienciaJovem),
+                        ObterValor(row, ColunasFeira.ExperienciaFeiras),
+                        ObterValor(row, ColunasFeira.Recomendacao)
+                    );
+                    _responsaveis.Add(responsavelSubmissao);
                 }
-                catch (Exception ex)
-                {
-                    RegistrarErro(resultado, numeroLinha, "Responsável da Submissão", ex);
-                    erroNaLinha = true;
-                    continue;
-                }
+
+                // Alimenta os contatos na RAM (as listas serão limpas no SalvarNoBancoAsync)
+                string emailResp = ObterValor(row, ColunasFeira.EnderecoEmailResponsavel);
+                if (!responsavelSubmissao.Email.Any(e => e.Endereco == emailResp))
+                    responsavelSubmissao.Email.Add(new Email(emailResp));
+
+                string telResp = ObterValor(row, ColunasFeira.TelefoneCelular);
+                if (!responsavelSubmissao.Telefone.Any(t => t.Numero == telResp))
+                    responsavelSubmissao.Telefone.Add(new Telefone(telResp));
+
+                string docResp = ObterValor(row, ColunasProjetos.DocumentoIdentificacaoResponsavel);
+                if (!responsavelSubmissao.Identidade.Any(i => i.Numero == docResp))
+                    responsavelSubmissao.Identidade.Add(new Identidade(docResp));
+
 
                 // ============================================================
                 // 2. INSTITUIÇÃO SEDE (DA SUBMISSÃO)
