@@ -394,11 +394,6 @@ namespace ConversorPlanilhaBD.Importacao
             resultado.RegistrarErro(linha, mensagem);
 
             Erro?.Invoke($"Linha {linha}: {mensagem}");
-
-            ContadoresAtualizados?.Invoke(
-                resultado.Sucessos,
-                resultado.Erros
-            );
         }
 
         //Metodo para Importar as Feiras
