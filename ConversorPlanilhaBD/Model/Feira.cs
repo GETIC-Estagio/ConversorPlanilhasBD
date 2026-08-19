@@ -66,7 +66,7 @@ namespace ConversorPlanilhaBD.Model
         public int? QuantosProjetos { get; set; }
 
         //Data e Hora que a feira foi registrada
-        public DateTime DataHora { get; set; }
+        public DateTime? DataHora { get; set; }
 
         /// <summary>
         /// Guarda uma lista de projetos
@@ -112,7 +112,7 @@ namespace ConversorPlanilhaBD.Model
             int? numProjetos, string? areasConhecimento, string? nivelEnsino,
             int? numEscolas, string? afiliada, string? processoSelecao,
             string? periodoElaboracao, string? projetosAvaliados,
-            int? quantosProjetos, DateTime dataHora)
+            int? quantosProjetos, DateTime? dataHora)
         {
             Nome = nome;
             Alcance = alcance;
