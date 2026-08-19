@@ -15,6 +15,9 @@ namespace ConversorPlanilhaBD.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        //Guarda o Nome do projeto
+        public string? Nome { get; set; }
+
         //Se houver inclusão de pessoas com deficiência
         public string? Deficiencia { get; set; }
 
@@ -25,10 +28,7 @@ namespace ConversorPlanilhaBD.Model
         public string? CategoriaInscricao { get; set; }
 
         //Data e Hora que o projeto foi registrado
-        public DateTime DataHora { get; set; }
-
-        //Guarda o Nome do projeto
-        public string? NomeProjeto { get; set; }
+        public DateTime? DataHora { get; set; }
 
         //Guarda as palavras chave referentes ao projeto
         public string? PalavrasChave { get; set; }
@@ -81,15 +81,15 @@ namespace ConversorPlanilhaBD.Model
         //Cria um construtor vazio, para o EF CORE funcionar
         protected Projeto() { }
 
-        public Projeto(string? deficiencia, string? participacao, string? categoriaInscricao, 
-            DateTime dataHora, string? nomeProjeto, string? palavrasChave, string? ods,
+        public Projeto(string? nomeProjeto, string? deficiencia, string? participacao, string? categoriaInscricao, 
+            DateTime? dataHora, string? palavrasChave, string? ods,
             string? tema, string? area, string? objetivo, string? resumo)
         {
+            Nome = nomeProjeto;
             Deficiencia = deficiencia;
             Participacao = participacao;
             CategoriaInscricao = categoriaInscricao;
             DataHora = dataHora;
-            NomeProjeto = nomeProjeto;
             PalavrasChave = palavrasChave;
             ODS = ods;
             Tema = tema;
