@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ConversorPlanilhaBD.Migrations
 {
     /// <inheritdoc />
-    public partial class PrimeiraMigracao : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -103,7 +103,7 @@ namespace ConversorPlanilhaBD.Migrations
                     PeriodoElaboracao = table.Column<string>(type: "text", nullable: true),
                     ProjetosAvaliados = table.Column<string>(type: "text", nullable: true),
                     QuantosProjetos = table.Column<int>(type: "integer", nullable: true),
-                    DataHora = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DataHora = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     InstituicaoId = table.Column<int>(type: "integer", nullable: true),
                     InstituicaoOrganizadoraId = table.Column<int>(type: "integer", nullable: true),
                     ResponsavelId = table.Column<int>(type: "integer", nullable: true),
@@ -231,11 +231,11 @@ namespace ConversorPlanilhaBD.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nome = table.Column<string>(type: "text", nullable: true),
                     Deficiencia = table.Column<string>(type: "text", nullable: true),
                     Participacao = table.Column<string>(type: "text", nullable: true),
                     CategoriaInscricao = table.Column<string>(type: "text", nullable: true),
-                    DataHora = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    NomeProjeto = table.Column<string>(type: "text", nullable: true),
+                    DataHora = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     PalavrasChave = table.Column<string>(type: "text", nullable: true),
                     ODS = table.Column<string>(type: "text", nullable: true),
                     Tema = table.Column<string>(type: "text", nullable: true),

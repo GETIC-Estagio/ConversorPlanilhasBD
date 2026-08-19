@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ConversorPlanilhaBD.Migrations
 {
     [DbContext(typeof(CienciaJovemDb))]
-    [Migration("20260818172127_PrimeiraMigracao")]
-    partial class PrimeiraMigracao
+    [Migration("20260819191825_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,7 +68,7 @@ namespace ConversorPlanilhaBD.Migrations
                     b.Property<string>("AreasConhecimento")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("DataHora")
+                    b.Property<DateTime?>("DataHora")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("DataRealizacao")
@@ -236,7 +236,7 @@ namespace ConversorPlanilhaBD.Migrations
                     b.Property<string>("CategoriaInscricao")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("DataHora")
+                    b.Property<DateTime?>("DataHora")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Deficiencia")
@@ -245,7 +245,7 @@ namespace ConversorPlanilhaBD.Migrations
                     b.Property<int?>("FeiraId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("NomeProjeto")
+                    b.Property<string>("Nome")
                         .HasColumnType("text");
 
                     b.Property<string>("ODS")
