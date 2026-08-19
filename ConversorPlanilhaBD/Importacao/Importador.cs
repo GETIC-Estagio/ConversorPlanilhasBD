@@ -401,7 +401,6 @@ namespace ConversorPlanilhaBD.Importacao
             );
         }
 
-
         //Metodo para Importar as Feiras
         private void ImportarFeiras(ResultadoImportacao resultado)
         {
@@ -421,16 +420,23 @@ namespace ConversorPlanilhaBD.Importacao
                 Responsavel? pessoaContato = null;
                 Instituicao? instituicaoSede = null;
                 Instituicao? instituicaoOrganizadora = null;
+                AuxInstituicaoResponsavel? aux = null;
                 Feira? feira = null;
+
+
+                #region Responsavel
 
                 // ============================================================
                 // 1. RESPONSÁVEL DA SUBMISSÃO
                 // ============================================================
 
+                //Pega o nome fazendo concatenação
                 string nome = ObterValor(row, ColunasFeira.NomeCompleto);
                 string sobrenome = ObterValor(row, ColunasFeira.Sobrenome);
                 string? nomeCompleto = $"{nome} {sobrenome}".Trim();
 
+                //Testa para ver se o nome existe
+                //se não continua
                 try
                 {
                     ValidationHelper.VerificarNome(nomeCompleto);
@@ -443,6 +449,8 @@ namespace ConversorPlanilhaBD.Importacao
                     continue;
                 }
 
+                //Se o nome existe, testa para ver se aquele responsavel ja existe
+                //Pq não foi inserido no banco ainda, não pode procurar por id
                 if (nomeCompleto != null)
                 {
                     // Evita duplicados na memória buscando pelo nome completo
@@ -450,8 +458,10 @@ namespace ConversorPlanilhaBD.Importacao
                         ValidationHelper.VerificarMesmoNome(r.Nome, nomeCompleto));
                 }
 
+                //Se não existe um responsavel, um novo é criado
                 if (responsavelSubmissao == null)
                 {
+                    //idGenero
                     string? idGenero = ObterValor(row, ColunasFeira.IdentidadeGenero);
                     try
                     {
@@ -465,83 +475,455 @@ namespace ConversorPlanilhaBD.Importacao
                         continue;
                     }
 
+                    //raça
+                    string? raca = ObterValor(row, ColunasFeira.RacaPessoa);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(idGenero);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Raça Responsável", ex);
+                        erroNaLinha = true;
+                        raca = null;
+                        continue;
+                    }
 
+                    //dataNascimento
+                    DateOnly? dataNascimento = null;
+                    try
+                    {
+                        dataNascimento = ValidationHelper.VerificarData(ObterValor(row, ColunasFeira.DataNascimento)); ;
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Data Nascimento Responsável", ex);
+                        erroNaLinha = true;
+                        continue;
+                    }
 
+                    //Professor
+                    string? professor = ObterValor(row, ColunasFeira.RacaPessoa);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(professor); ;
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Professor Responsável", ex);
+                        erroNaLinha = true;
+                        professor = null;
+                        continue;
+                    }
+
+                    //Nível Ensino
+                    string? nivelEnsino = ObterValor(row, ColunasFeira.NivelEnsinoResponsavel);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(nivelEnsino);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Nível Ensino Responsável", ex);
+                        erroNaLinha = true;
+                        nivelEnsino = null;
+                        continue;
+                    }
+
+                    //Participou Ciência Jovem
+                    string? participouCienciaJovem = ObterValor(row, ColunasFeira.ParticipouCienciaJovem);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(participouCienciaJovem);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Participou Ciência Jovem Responsável", ex);
+                        erroNaLinha = true;
+                        participouCienciaJovem = null;
+                        continue;
+                    }
+
+                    //Experiência Feiras
+                    string? experienciaFeiras = ObterValor(row, ColunasFeira.ExperienciaFeiras);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(experienciaFeiras);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Experiência Feiras Responsável", ex);
+                        erroNaLinha = true;
+                        experienciaFeiras = null;
+                        continue;
+                    }
+
+                    //Recomendação
+                    string? recomendacao = ObterValor(row, ColunasFeira.Recomendacao);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(recomendacao);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Recomendação Responsável", ex);
+                        erroNaLinha = true;
+                        recomendacao = null;
+                        continue;
+                    }
 
                     responsavelSubmissao = new Responsavel(
                         nomeCompleto,
                         idGenero,
-                        ObterValor(row, ColunasFeira.RacaPessoa),
-                        ObterValor(row, ColunasFeira.DataNascimento),
-                        ObterValor(row, ColunasFeira.EhProfessor),
-                        ObterValor(row, ColunasFeira.NivelEnsinoResponsavel),
-                        ObterValor(row, ColunasFeira.ParticipouCienciaJovem),
-                        ObterValor(row, ColunasFeira.ExperienciaFeiras),
-                        ObterValor(row, ColunasFeira.Recomendacao)
+                        raca,
+                        dataNascimento,
+                        professor,
+                        nivelEnsino,
+                        participouCienciaJovem,
+                        experienciaFeiras,
+                        recomendacao
                     );
                     _responsaveis.Add(responsavelSubmissao);
                 }
 
-                // Alimenta os contatos na RAM (as listas serão limpas no SalvarNoBancoAsync)
+                // Alimenta os contatos na RAM (as listas são limpas no SalvarNoBancoAsync)
+
+                //email
                 string emailResp = ObterValor(row, ColunasFeira.EnderecoEmailResponsavel);
-                if (!responsavelSubmissao.Email.Any(e => e.Endereco == emailResp))
-                    responsavelSubmissao.Email.Add(new Email(emailResp));
+                try
+                {
+                    ValidationHelper.VerificarEmail(emailResp);
 
+                    if (!responsavelSubmissao.Email.Any(e => e.Endereco == emailResp))
+                        responsavelSubmissao.Email.Add(new Email(emailResp));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Email Responsável", ex);
+                    erroNaLinha = true;
+                    continue;
+                }
+
+                //telefone
                 string telResp = ObterValor(row, ColunasFeira.TelefoneCelular);
-                if (!responsavelSubmissao.Telefone.Any(t => t.Numero == telResp))
-                    responsavelSubmissao.Telefone.Add(new Telefone(telResp));
+                try
+                {
+                    telResp = ValidationHelper.VerificarTelefone(telResp);
 
+                    if (!responsavelSubmissao.Telefone.Any(e => e.Numero == telResp))
+                        responsavelSubmissao.Telefone.Add(new Telefone(telResp));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Telefone Responsável", ex);
+                    erroNaLinha = true;
+                    continue;
+                }
+
+                //Identidade
                 string docResp = ObterValor(row, ColunasProjetos.DocumentoIdentificacaoResponsavel);
-                if (!responsavelSubmissao.Identidade.Any(i => i.Numero == docResp))
-                    responsavelSubmissao.Identidade.Add(new Identidade(docResp));
+                try
+                {
+                    docResp = ValidationHelper.VerificarIdentidade(docResp);
 
+                    if (!responsavelSubmissao.Identidade.Any(i => i.Numero == docResp))
+                        responsavelSubmissao.Identidade.Add(new Identidade(docResp));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Identidade Responsável", ex);
+                    erroNaLinha = true;
+                    continue;
+                }
 
+                #endregion
+
+                #region Instituicao
                 // ============================================================
                 // 2. INSTITUIÇÃO SEDE (DA SUBMISSÃO)
                 // ============================================================
+
+                string? nomeInst = ObterValor(row, ColunasFeira.NomeInstituicao);
+
                 try
                 {
-                    string nomeInst = ObterValor(row, ColunasFeira.NomeInstituicao);
+                    ValidationHelper.VerificarNome(nomeInst);
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Nome Instituição", ex);
+                    erroNaLinha = true;
+                    nomeInst = null;
+                    continue;
+                }
 
+                //Procura para saber se ja existe uma instituicao de mesmo nome
+                //Pelo mesmo motivo de responsavel
+                if (nomeInst != null)
+                {
                     instituicaoSede = _instituicoes.FirstOrDefault(i =>
                         ValidationHelper.VerificarMesmoNome(i.Nome, nomeInst));
+                }
 
-                    if (instituicaoSede == null)
+                //Criacao de instituicao
+                if (instituicaoSede == null)
+                {
+                    // CNPJ
+                    string? cnpj = ObterValor(row, ColunasFeira.Cnpj);
+                    try
                     {
-                        instituicaoSede = new Instituicao(
-                            nomeInst,
-                            ObterValor(row, ColunasFeira.Cnpj),
-                            ObterValor(row, ColunasFeira.Pais),
-                            ObterValor(row, ColunasFeira.EstadoInstituicao),
-                            ObterValor(row, ColunasFeira.Municipio),
-                            ObterValor(row, ColunasFeira.EnderecoInstituicao),
-                            ObterValor(row, ColunasFeira.TipoRede),
-                            ObterValor(row, ColunasFeira.Gre),
-                            ObterValor(row, ColunasFeira.Ideb),
-                            ObterValor(row, ColunasFeira.Idhm),
-                            ObterValor(row, ColunasFeira.ParticipacaoInstituicao),
-                            ObterValor(row, ColunasFeira.OfertaEnsino),
-                            ObterValor(row, ColunasFeira.AdereTempoIntegral),
-                            ObterValor(row, ColunasFeira.TipologiaMunicipio),
-                            ObterValor(row, ColunasFeira.ApoioFinanceiro)
-                        );
-                        _instituicoes.Add(instituicaoSede);
+                        cnpj = ValidationHelper.VerificarCNPJ(cnpj);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "CNPJ Instituição", ex);
+                        erroNaLinha = true;
+                        cnpj = null;
+                        continue;
                     }
 
-                    string telInst = ObterValor(row, ColunasFeira.TelefoneInstituicao);
+                    // País
+                    string? pais = ObterValor(row, ColunasFeira.Pais);
+                    try
+                    {
+                        ValidationHelper.VerificarPais(pais);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "País Instituição", ex);
+                        erroNaLinha = true;
+                        pais = null;
+                        continue;
+                    }
+
+                    // Estado
+                    string? estado = ObterValor(row, ColunasFeira.EstadoInstituicao);
+                    try
+                    {
+                        if (pais != null && (pais.ToUpper() == "BRAZIL" || pais.ToUpper() == "BRASIL" || pais.ToUpper() == "BR"))
+                        {
+                            ValidationHelper.VerificarEstadoBR(estado);
+                        }
+                        else
+                        {
+                            ValidationHelper.VerificarTexto(estado);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Estado Instituição", ex);
+                        erroNaLinha = true;
+                        estado = null;
+                        continue;
+                    }
+
+                    // Município
+                    string? municipio = ObterValor(row, ColunasFeira.Municipio);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(municipio);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Município Instituição", ex);
+                        erroNaLinha = true;
+                        municipio = null;
+                        continue;
+                    }
+
+                    // Endereço
+                    string? endereco = ObterValor(row, ColunasFeira.EnderecoInstituicao);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(endereco);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Endereço Instituição", ex);
+                        erroNaLinha = true;
+                        endereco = null;
+                        continue;
+                    }
+
+                    // Tipo de Rede
+                    string? tipoRede = ObterValor(row, ColunasFeira.TipoRede);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(tipoRede);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Tipo Rede Instituição", ex);
+                        erroNaLinha = true;
+                        tipoRede = null;
+                        continue;
+                    }
+
+                    // GRE
+                    string? gre = ObterValor(row, ColunasFeira.Gre);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(gre);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "GRE Instituição", ex);
+                        erroNaLinha = true;
+                        gre = null;
+                        continue;
+                    }
+
+                    // IDEB
+                    double ideb = 0;
+                    try
+                    {
+                        ideb = ValidationHelper.VerificarNumeroDouble(ObterValor(row, ColunasFeira.Ideb));
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "IDEB Instituição", ex);
+                        erroNaLinha = true;
+                        continue;
+                    }
+
+                    // IDHM
+                    double idhm = 0;
+                    try
+                    {
+                        idhm = ValidationHelper.VerificarNumeroDouble(ObterValor(row, ColunasFeira.Idhm));
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "IDHM Instituição", ex);
+                        erroNaLinha = true;
+                        continue;
+                    }
+
+                    // Participante
+                    string? participante = ObterValor(row, ColunasFeira.ParticipacaoInstituicao);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(participante);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Participação Instituição", ex);
+                        erroNaLinha = true;
+                        participante = null;
+                        continue;
+                    }
+
+                    // Oferta Ensino
+                    string? ofertaEnsino = ObterValor(row, ColunasFeira.OfertaEnsino);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(ofertaEnsino);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Oferta Ensino Instituição", ex);
+                        erroNaLinha = true;
+                        ofertaEnsino = null;
+                        continue;
+                    }
+
+                    // Adere Tempo Integral
+                    string? adere = ObterValor(row, ColunasFeira.AdereTempoIntegral);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(adere);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Adesão Tempo Integral Instituição", ex);
+                        erroNaLinha = true;
+                        adere = null;
+                        continue;
+                    }
+
+                    // Tipologia Município
+                    string? tipologiaMunicipio = ObterValor(row, ColunasFeira.TipologiaMunicipio);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(tipologiaMunicipio);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Tipologia Município Instituição", ex);
+                        erroNaLinha = true;
+                        tipologiaMunicipio = null;
+                        continue;
+                    }
+
+                    // Apoio Financeiro
+                    string? apoioFinanceiro = ObterValor(row, ColunasFeira.ApoioFinanceiro);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(apoioFinanceiro);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Apoio Financeiro Instituição", ex);
+                        erroNaLinha = true;
+                        apoioFinanceiro = null;
+                        continue;
+                    }
+
+                    instituicaoSede = new Instituicao(
+                        nomeInst,
+                        cnpj,
+                        pais,
+                        estado,
+                        municipio,
+                        endereco,
+                        tipoRede,
+                        gre,
+                        ideb,
+                        idhm,
+                        participante,
+                        ofertaEnsino,
+                        adere,
+                        tipologiaMunicipio,
+                        apoioFinanceiro
+                    );
+                    _instituicoes.Add(instituicaoSede);
+                }
+
+                // Telefone Instituição
+                string telInst = ObterValor(row, ColunasFeira.TelefoneInstituicao);
+                try
+                {
+                    telInst = ValidationHelper.VerificarTelefone(telInst);
+
                     if (!instituicaoSede.Telefone.Any(e => e.Numero == telInst))
                         instituicaoSede.Telefone.Add(new Telefone(telInst));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Telefone Instituição", ex);
+                    erroNaLinha = true;
+                    continue;
+                }
 
-                    string emailInst = ObterValor(row, ColunasFeira.EmailInstituicao);
+                // Email Instituição
+                string emailInst = ObterValor(row, ColunasFeira.EmailInstituicao);
+                try
+                {
+                    ValidationHelper.VerificarEmail(emailInst);
+
                     if (!instituicaoSede.Email.Any(e => e.Endereco == emailInst))
                         instituicaoSede.Email.Add(new Email(emailInst));
                 }
                 catch (Exception ex)
                 {
-                    RegistrarErro(resultado, numeroLinha, "Instituição Sede", ex);
+                    RegistrarErro(resultado, numeroLinha, "Email Instituição", ex);
                     erroNaLinha = true;
                     continue;
                 }
+
+                #endregion
+
+                #region Auxiliar Responsavel Instituicao
 
                 // ============================================================
                 // 3. VÍNCULO AUXILIAR (RESPONSÁVEL <-> INSTITUIÇÃO)
@@ -549,15 +931,19 @@ namespace ConversorPlanilhaBD.Importacao
 
                 if (responsavelSubmissao != null && instituicaoSede != null)
                 {
+                    string funcao = ObterValor(row, ColunasFeira.FuncaoResponsavelInstituicao);
+
                     try
                     {
-                        string funcao = ObterValor(row, ColunasFeira.FuncaoResponsavelInstituicao);
+                        ValidationHelper.VerificarTexto(funcao);
 
                         if (!responsavelSubmissao.AuxInstituicaoResponsavel.Any(a => a.Instituicao == instituicaoSede))
                         {
-                            var aux = new AuxInstituicaoResponsavel(responsavelSubmissao, instituicaoSede, funcao);
+                            aux = new AuxInstituicaoResponsavel(responsavelSubmissao, instituicaoSede, funcao);
                             responsavelSubmissao.AuxInstituicaoResponsavel.Add(aux);
                             instituicaoSede.AuxInstituicaoResponsavel.Add(aux);
+
+                            _relacionamentosInstituicaoResponsavel.Add(aux);
                         }
                     }
                     catch (Exception ex)
@@ -568,124 +954,417 @@ namespace ConversorPlanilhaBD.Importacao
                     }
                 }
 
+                #endregion
+
+                #region Instituicao Organizadora
                 // ============================================================
                 // 4. INSTITUIÇÃO ORGANIZADORA DA FEIRA
                 // ============================================================
+
+                string? nomeOrganizadora = ObterValor(row, ColunasFeira.InstituicaoOrganizadora);
+
                 try
                 {
-                    string nomeOrganizadora = ObterValor(row, ColunasFeira.InstituicaoOrganizadora);
-
-
-                    instituicaoOrganizadora = _instituicoes.FirstOrDefault(i =>
-                        ValidationHelper.VerificarMesmoNome(i.Nome, nomeOrganizadora));
-
-                    if (instituicaoOrganizadora == null)
-                    {
-                        instituicaoOrganizadora = new Instituicao(nomeOrganizadora);
-                        _instituicoes.Add(instituicaoOrganizadora);
-                    }
-
+                    ValidationHelper.VerificarNome(nomeOrganizadora);
                 }
                 catch (Exception ex)
                 {
-                    RegistrarErro(resultado, numeroLinha, "Instituição Organizadora", ex);
+                    RegistrarErro(resultado, numeroLinha, "Nome Instituição Organizadora", ex);
                     erroNaLinha = true;
+                    nomeOrganizadora = null;
                     continue;
                 }
 
+                if (nomeOrganizadora != null)
+                {
+                    instituicaoOrganizadora = _instituicoes.FirstOrDefault(i =>
+                        ValidationHelper.VerificarMesmoNome(i.Nome, nomeOrganizadora));
+                }
+
+
+                if (instituicaoOrganizadora == null)
+                {
+                    instituicaoOrganizadora = new Instituicao(nomeOrganizadora);
+                    _instituicoes.Add(instituicaoOrganizadora);
+                }
+
+                #endregion
+
+                #region Pessoa Contato
                 // ============================================================
                 // 5. PESSOA DE CONTATO DA FEIRA
                 // ============================================================
+
+                string? nomeContato = ObterValor(row, ColunasFeira.PessoaContatoFeira);
+
                 try
                 {
-                    string nomeContato = ObterValor(row, ColunasFeira.PessoaContatoFeira);
-
-                    pessoaContato = _responsaveis.FirstOrDefault(r =>
-                        ValidationHelper.VerificarMesmoNome(r.Nome, nomeContato));
-
-                    if (pessoaContato == null)
-                    {
-                        pessoaContato = new Responsavel(nomeContato, "", "");
-                        _responsaveis.Add(pessoaContato);
-                    }
-
-                    string telContato = ObterValor(row, ColunasFeira.TelefoneContatoFeira);
-                    if (!pessoaContato.Telefone.Any(e => e.Numero == telContato))
-                        pessoaContato.Telefone.Add(new Telefone(telContato));
-
-                    string emailContato = ObterValor(row, ColunasFeira.EmailContatoFeira);
-                    if (!pessoaContato.Email.Any(e => e.Endereco == emailContato))
-                        pessoaContato.Email.Add(new Email(emailContato));
-
+                    ValidationHelper.VerificarNome(nomeContato);
                 }
                 catch (Exception ex)
                 {
-                    RegistrarErro(resultado, numeroLinha, "Pessoa de Contato da Feira", ex);
+                    RegistrarErro(resultado, numeroLinha, "Nome Pessoa Contato Feira", ex);
+                    erroNaLinha = true;
+                    nomeContato = null;
+                    continue;
+                }
+
+                if (nomeContato != null)
+                {
+                    pessoaContato = _responsaveis.FirstOrDefault(r =>
+                        ValidationHelper.VerificarMesmoNome(r.Nome, nomeContato));
+                }
+
+                if (pessoaContato == null)
+                {
+                    //Não é enviado raça, nem idGenero no responsavel de contato
+                    //portanto é iniciado com null
+                    pessoaContato = new Responsavel(nomeContato, null, null);
+                    _responsaveis.Add(pessoaContato);
+                }
+
+                // Telefone Contato
+                string telContato = ObterValor(row, ColunasFeira.TelefoneContatoFeira);
+                try
+                {
+                    telContato = ValidationHelper.VerificarTelefone(telContato);
+
+                    if (!pessoaContato.Telefone.Any(e => e.Numero == telContato))
+                        pessoaContato.Telefone.Add(new Telefone(telContato));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Telefone Pessoa Contato Feira", ex);
                     erroNaLinha = true;
                     continue;
                 }
 
+                // Email Contato
+                string emailContato = ObterValor(row, ColunasFeira.EmailContatoFeira);
+                try
+                {
+                    ValidationHelper.VerificarEmail(emailContato);
+
+                    if (!pessoaContato.Email.Any(e => e.Endereco == emailContato))
+                        pessoaContato.Email.Add(new Email(emailContato));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Email Pessoa Contato Feira", ex);
+                    erroNaLinha = true;
+                    continue;
+                }
+
+                #endregion
+
+                #region Feira
                 // ============================================================
                 // 6. INSTANCIAÇÃO DA FEIRA E VÍNCULOS DE NAVEGAÇÃO
                 // ============================================================
+
+                string? nomeFeira = ObterValor(row, ColunasFeira.NomeFeira);
+
                 try
                 {
-                    feira = new Feira(
-                        ObterValor(row, ColunasFeira.NomeFeira),
-                        ObterValor(row, ColunasFeira.AlcanceFeira),
-                        ObterValor(row, ColunasFeira.EnderecoFeira),
-                        ObterValor(row, ColunasFeira.EstadoFeira),
-                        ObterValor(row, ColunasFeira.PeriodoRealizacaoFeira),
-                        ObterValor(row, ColunasFeira.DataRealizacaoFeira),
-                        ObterValor(row, ColunasFeira.ModalidadeParticipacaoFeira),
-                        ObterValor(row, ColunasFeira.NumeroProjetosParticipantes),
-                        ObterValor(row, ColunasFeira.AreasConhecimento),
-                        ObterValor(row, ColunasFeira.NivelEnsinoAlunos),
-                        ObterValor(row, ColunasFeira.NumeroEscolasParticipantes),
-                        ObterValor(row, ColunasFeira.FeiraAfiliada),
-                        ObterValor(row, ColunasFeira.ProcessoSelecao),
-                        ObterValor(row, ColunasFeira.PeriodoElaboracao),
-                        ObterValor(row, ColunasFeira.ProjetosAvaliados),
-                        ObterValor(row, ColunasFeira.QuantosProjetos),
-                        ObterValor(row, ColunasFeira.CarimboDataHora)
-                    );
-
-                    // Vincula o Responsável da Submissão (Principal)
-                    if (responsavelSubmissao != null)
-                    {
-                        feira.Responsavel = responsavelSubmissao;
-                        responsavelSubmissao.Feiras.Add(feira); // Sincroniza a lista inversa
-                    }
-
-                    // Vincula a Instituição Sede
-                    if (instituicaoSede != null)
-                    {
-                        feira.Instituicao = instituicaoSede;
-                        instituicaoSede.Feiras.Add(feira); // Sincroniza a lista inversa
-                    }
-
-                    // Vincula a Instituição Organizadora
-                    if (instituicaoOrganizadora != null)
-                    {
-                        feira.InstituicaoOrganizadora = instituicaoOrganizadora;
-                        instituicaoOrganizadora.FeirasOrganizadas.Add(feira); // Sincroniza a lista inversa do InverseProperty
-                    }
-
-                    // Vincula a Pessoa de Contato da Feira
-                    if (pessoaContato != null)
-                    {
-                        feira.ResponsavelContato = pessoaContato;
-                        pessoaContato.FeirasContato.Add(feira); // Sincroniza a lista inversa do InverseProperty
-                    }
-
-                    _feirasImportadas.Add(feira);
+                    ValidationHelper.VerificarTexto(nomeFeira);
                 }
                 catch (Exception ex)
                 {
-                    RegistrarErro(resultado, numeroLinha, "Dados da Feira", ex);
+                    RegistrarErro(resultado, numeroLinha, "Nome da Feira", ex);
                     erroNaLinha = true;
+                    nomeFeira = null;
                     continue;
                 }
+
+
+                if (nomeFeira != null)
+                {
+                    // Evita duplicados na memória buscando pelo nome completo
+                    feira = _feirasImportadas.FirstOrDefault(r =>
+                        ValidationHelper.VerificarMesmoNome(r.Nome, nomeFeira));
+                }
+
+                if (feira == null)
+                {
+                    //Alcance
+                    string? alcance = ObterValor(row, ColunasFeira.AlcanceFeira);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(alcance);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Alcance da Feira", ex);
+                        erroNaLinha = true;
+                        alcance = null;
+                        continue;
+                    }
+
+                    //Endereco
+                    string? enderecoFeira = ObterValor(row, ColunasFeira.EnderecoFeira);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(enderecoFeira);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Endereço da Feira", ex);
+                        erroNaLinha = true;
+                        enderecoFeira = null;
+                        continue;
+                    }
+
+                    //Estado
+                    string? estadoFeira = ObterValor(row, ColunasFeira.EstadoFeira);
+                    try
+                    {
+                        // Valida o estado apenas se a instituição sede for do Brasil
+                        string? paisSede = instituicaoSede?.Pais;
+                        if (paisSede != null && (paisSede.ToUpper() == "BRAZIL" || paisSede.ToUpper() == "BRASIL" || paisSede.ToUpper() == "BR"))
+                        {
+                            ValidationHelper.VerificarEstadoBR(estadoFeira);
+                        }
+                        else
+                        {
+                            ValidationHelper.VerificarTexto(estadoFeira);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Estado da Feira", ex);
+                        erroNaLinha = true;
+                        estadoFeira = null;
+                        continue;
+                    }
+
+                    //Periodo Realizacao
+                    string? periodoRealizacao = ObterValor(row, ColunasFeira.PeriodoRealizacaoFeira);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(periodoRealizacao);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Período de Realização da Feira", ex);
+                        erroNaLinha = true;
+                        periodoRealizacao = null;
+                        continue;
+                    }
+
+                    //Data realizacao
+                    string? dataRealizacao = ObterValor(row, ColunasFeira.DataRealizacaoFeira);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(dataRealizacao);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Data de Realização da Feira", ex);
+                        erroNaLinha = true;
+                        dataRealizacao = null;
+                        continue;
+                    }
+
+                    //Modalidade
+                    string? modalidade = ObterValor(row, ColunasFeira.ModalidadeParticipacaoFeira);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(modalidade);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Modalidade da Feira", ex);
+                        erroNaLinha = true;
+                        modalidade = null;
+                        continue;
+                    }
+
+                    //Num projeto
+                    int numProjetos = 0;
+                    try
+                    {
+                        numProjetos = ValidationHelper.VerificarNumeroInt(ObterValor(row, ColunasFeira.NumeroProjetosParticipantes));
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Número de Projetos Participantes", ex);
+                        erroNaLinha = true;
+                        continue;
+                    }
+
+                    //areasConhecimento
+                    string? areasConhecimento = ObterValor(row, ColunasFeira.AreasConhecimento);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(areasConhecimento);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Áreas de Conhecimento da Feira", ex);
+                        erroNaLinha = true;
+                        areasConhecimento = null;
+                        continue;
+                    }
+
+                    //nivel ensino
+                    string? nivelEnsinoAlunos = ObterValor(row, ColunasFeira.NivelEnsinoAlunos);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(nivelEnsinoAlunos);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Nível de Ensino da Feira", ex);
+                        erroNaLinha = true;
+                        nivelEnsinoAlunos = null;
+                        continue;
+                    }
+
+                    //numero escolas
+                    int numEscolas = 0;
+                    try
+                    {
+                        numEscolas = ValidationHelper.VerificarNumeroInt(ObterValor(row, ColunasFeira.NumeroEscolasParticipantes));
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Número de Escolas Participantes", ex);
+                        erroNaLinha = true;
+                        continue;
+                    }
+
+                    //afiliacoes
+                    string? afiliada = ObterValor(row, ColunasFeira.FeiraAfiliada);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(afiliada);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Feira Afiliada", ex);
+                        erroNaLinha = true;
+                        afiliada = null;
+                        continue;
+                    }
+
+                    //processo de selecao
+                    string? processoSelecao = ObterValor(row, ColunasFeira.ProcessoSelecao);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(processoSelecao);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Processo de Seleção da Feira", ex);
+                        erroNaLinha = true;
+                        processoSelecao = null;
+                        continue;
+                    }
+
+                    //periodo de elaboração
+                    string? periodoElaboracao = ObterValor(row, ColunasFeira.PeriodoElaboracao);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(periodoElaboracao);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Período de Elaboração da Feira", ex);
+                        erroNaLinha = true;
+                        periodoElaboracao = null;
+                        continue;
+                    }
+
+                    //projetos avaliados
+                    string? projetosAvaliados = ObterValor(row, ColunasFeira.ProjetosAvaliados);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(projetosAvaliados);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Projetos Avaliados da Feira", ex);
+                        erroNaLinha = true;
+                        projetosAvaliados = null;
+                        continue;
+                    }
+
+                    //quantos projetos
+                    int quantosProjetos = 0;
+                    try
+                    {
+                        quantosProjetos = ValidationHelper.VerificarNumeroInt(ObterValor(row, ColunasFeira.QuantosProjetos));
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Quantidade Total de Projetos Apresentados", ex);
+                        erroNaLinha = true;
+                        continue;
+                    }
+
+                    //Carimbo Data Hora
+                    DateTime? carimboDataHora = null;
+                    try
+                    {
+                        carimboDataHora = ValidationHelper.VerificarDataHora(ObterValor(row, ColunasFeira.CarimboDataHora));
+                    }
+                    catch (Exception ex) 
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Carimbo de Data/Hora da Feira", ex);
+                        erroNaLinha = true;
+                        continue;
+                    }
+
+                    feira = new Feira(
+                        nomeFeira,
+                        alcance,
+                        enderecoFeira,
+                        estadoFeira,
+                        periodoRealizacao,
+                        dataRealizacao,
+                        modalidade,
+                        numProjetos,
+                        areasConhecimento,
+                        nivelEnsinoAlunos,
+                        numEscolas,
+                        afiliada,
+                        processoSelecao,
+                        periodoElaboracao,
+                        projetosAvaliados,
+                        quantosProjetos,
+                        carimboDataHora
+                    );
+                    _feirasImportadas.Add(feira);
+                }
+
+                // Vincula o Responsável da Submissão (Principal)
+                if (responsavelSubmissao != null)
+                {
+                    feira.Responsavel = responsavelSubmissao;
+                    responsavelSubmissao.Feiras.Add(feira); // Sincroniza a lista inversa
+                }
+
+                // Vincula a Instituição Sede
+                if (instituicaoSede != null)
+                {
+                    feira.Instituicao = instituicaoSede;
+                    instituicaoSede.Feiras.Add(feira); // Sincroniza a lista inversa
+                }
+
+                // Vincula a Instituição Organizadora
+                if (instituicaoOrganizadora != null)
+                {
+                    feira.InstituicaoOrganizadora = instituicaoOrganizadora;
+                    instituicaoOrganizadora.FeirasOrganizadas.Add(feira); // Sincroniza a lista inversa do InverseProperty
+                }
+
+                // Vincula a Pessoa de Contato da Feira
+                if (pessoaContato != null)
+                {
+                    feira.ResponsavelContato = pessoaContato;
+                    pessoaContato.FeirasContato.Add(feira); // Sincroniza a lista inversa do InverseProperty
+                }
+                #endregion
 
                 if (!erroNaLinha)
                 {
@@ -1024,12 +1703,11 @@ namespace ConversorPlanilhaBD.Importacao
                     //Caso 1: Transforma em dd/MM/yyyy HH:mm:ss
                     if (coluna == ColunasFeira.CarimboDataHora || coluna == ColunasProjetos.CarimboDataHora)
                     {
-                        return dataHoraNativa.ToString("dd/MM/yyyy HH:mm:ss");
+                        return dataHoraNativa.ToString("dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                     }
 
                     //Caso2: Transforma somente em dd/MM/yyyy
-                    DateOnly dataSimples = DateOnly.FromDateTime(dataHoraNativa);
-                    return dataSimples.ToString("dd/MM/yyyy");
+                    return dataHoraNativa.ToString("dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
                 }
                 catch
                 {
