@@ -1303,7 +1303,7 @@ namespace ConversorPlanilhaBD.Importacao
                     {
                         carimboDataHora = ValidationHelper.VerificarDataHora(ObterValor(row, ColunasFeira.CarimboDataHora));
                     }
-                    catch (Exception ex) 
+                    catch (Exception ex)
                     {
                         RegistrarErro(resultado, numeroLinha, "Carimbo de Data/Hora da Feira", ex);
                         erroNaLinha = true;
@@ -1385,105 +1385,480 @@ namespace ConversorPlanilhaBD.Importacao
 
                 Responsavel? responsavel = null;
                 Instituicao? instituicao = null;
+                AuxInstituicaoResponsavel? aux = null;
                 Professor? professor = null;
-                Pessoa? aluno1 = null;
-                Pessoa? aluno2 = null;
+                Pessoa? aluno = null;
                 Projeto? projeto = null;
 
+                #region Responsavel
                 // ============================================================
                 // 1. RESPONSÁVEL DO PROJETO
                 // ============================================================
+                string? nomeCompleto = ObterValor(row, ColunasProjetos.NomeCompletoResponsavel);
+
                 try
                 {
-                    string nomeCompleto = ObterValor(row, ColunasProjetos.NomeCompletoResponsavel);
+                    ValidationHelper.VerificarNome(nomeCompleto);
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Nome Responsável", ex);
+                    erroNaLinha = true;
+                    nomeCompleto = null;
+                    continue;
+                }
 
-                    // Busca na RAM para evitar duplicados
+                // Busca na RAM para evitar duplicados
+                if (nomeCompleto != null)
+                {
                     responsavel = _responsaveis.FirstOrDefault(r =>
                         ValidationHelper.VerificarMesmoNome(r.Nome, nomeCompleto));
+                }
 
-                    if (responsavel == null)
+                if (responsavel == null)
+                {
+                    //idGenero
+                    string? idGenero = ObterValor(row, ColunasProjetos.IdentidadeGeneroResponsavel);
+                    try
                     {
-                        responsavel = new Responsavel(
-                            nomeCompleto,
-                            ObterValor(row, ColunasProjetos.IdentidadeGeneroResponsavel),
-                            ObterValor(row, ColunasProjetos.RacaResponsavel),
-                            ObterValor(row, ColunasProjetos.DataNascimentoResponsavel),
-                            ObterValor(row, ColunasProjetos.ProfessorResponsavel),
-                            ObterValor(row, ColunasProjetos.NivelEnsinoResponsavel),
-                            ObterValor(row, ColunasProjetos.ParticipanteResponsavel),
-                            ObterValor(row, ColunasProjetos.ExperienciaResponsavel),
-                            ObterValor(row, ColunasProjetos.Recomendacao)
-                        );
-                        _responsaveis.Add(responsavel);
+                        ValidationHelper.VerificarTexto(idGenero);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Identidade Gênero Responsável", ex);
+                        erroNaLinha = true;
+                        idGenero = null;
+                        continue;
                     }
 
-                    // Adiciona contatos do responsável se houver novos dados
-                    string emailResp = ObterValor(row, ColunasProjetos.EmailResponsavel);
+                    //raça
+                    string? raca = ObterValor(row, ColunasProjetos.RacaResponsavel);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(raca);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Raça Responsável", ex);
+                        erroNaLinha = true;
+                        raca = null;
+                        continue;
+                    }
+
+                    //dataNascimento
+                    DateOnly? dataNascimento = null;
+                    try
+                    {
+                        dataNascimento = ValidationHelper.VerificarData(ObterValor(row, ColunasProjetos.DataNascimentoResponsavel));
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Data Nascimento Responsável", ex);
+                        erroNaLinha = true;
+                        continue;
+                    }
+
+                    //Professor
+                    string? professor2 = ObterValor(row, ColunasProjetos.ProfessorResponsavel);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(professor2);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Professor Responsável", ex);
+                        erroNaLinha = true;
+                        professor2 = null;
+                        continue;
+                    }
+
+                    //Nível Ensino
+                    string? nivelEnsino = ObterValor(row, ColunasProjetos.NivelEnsinoResponsavel);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(nivelEnsino);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Nível Ensino Responsável", ex);
+                        erroNaLinha = true;
+                        nivelEnsino = null;
+                        continue;
+                    }
+
+                    //Participante
+                    string? participante = ObterValor(row, ColunasProjetos.ParticipanteResponsavel);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(participante);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Participante Responsável", ex);
+                        erroNaLinha = true;
+                        participante = null;
+                        continue;
+                    }
+
+                    //Experiência Feiras
+                    string? experienciaFeiras = ObterValor(row, ColunasProjetos.ExperienciaResponsavel);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(experienciaFeiras);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Experiência Feiras Responsável", ex);
+                        erroNaLinha = true;
+                        experienciaFeiras = null;
+                        continue;
+                    }
+
+                    //Recomendação
+                    string? recomendacao = ObterValor(row, ColunasProjetos.Recomendacao);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(recomendacao);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Recomendação Responsável", ex);
+                        erroNaLinha = true;
+                        recomendacao = null;
+                        continue;
+                    }
+
+                    responsavel = new Responsavel(
+                        nomeCompleto,
+                        idGenero,
+                        raca,
+                        dataNascimento,
+                        professor2,
+                        nivelEnsino,
+                        participante,
+                        experienciaFeiras,
+                        recomendacao
+                    );
+                    _responsaveis.Add(responsavel);
+                }
+
+                //email
+                string emailResp = ObterValor(row, ColunasProjetos.EmailResponsavel);
+                try
+                {
+                    ValidationHelper.VerificarEmail(emailResp);
+
                     if (!responsavel.Email.Any(e => e.Endereco == emailResp))
                         responsavel.Email.Add(new Email(emailResp));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Email Responsável", ex);
+                    erroNaLinha = true;
+                    continue;
+                }
 
-                    string telResp = ObterValor(row, ColunasProjetos.TelefoneResponsavel);
+                //telefone
+                string telResp = ObterValor(row, ColunasProjetos.TelefoneResponsavel);
+                try
+                {
+                    telResp = ValidationHelper.VerificarTelefone(telResp);
+
                     if (!responsavel.Telefone.Any(t => t.Numero == telResp))
                         responsavel.Telefone.Add(new Telefone(telResp));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Telefone Responsável", ex);
+                    erroNaLinha = true;
+                    continue;
+                }
 
-                    string docResp = ObterValor(row, ColunasProjetos.DocumentoIdentificacaoResponsavel);
+                //Identidade
+                string docResp = ObterValor(row, ColunasProjetos.DocumentoIdentificacaoResponsavel);
+                try
+                {
+                    docResp = ValidationHelper.VerificarIdentidade(docResp);
+
                     if (!responsavel.Identidade.Any(i => i.Numero == docResp))
                         responsavel.Identidade.Add(new Identidade(docResp));
                 }
                 catch (Exception ex)
                 {
-                    RegistrarErro(resultado, numeroLinha, "Responsável do Projeto", ex);
+                    RegistrarErro(resultado, numeroLinha, "Identidade Responsável", ex);
+                    erroNaLinha = true;
+                    continue;
+                }
+                #endregion
+
+                #region Instituicao
+                // ============================================================
+                // 2. INSTITUIÇÃO DO PROJETO
+                // ============================================================
+                string? nomeInst = ObterValor(row, ColunasProjetos.NomeInstituicao);
+
+                try
+                {
+                    ValidationHelper.VerificarNome(nomeInst);
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Nome Instituição", ex);
+                    erroNaLinha = true;
+                    nomeInst = null;
+                    continue;
+                }
+
+                if (nomeInst != null)
+                {
+                    instituicao = _instituicoes.FirstOrDefault(i =>
+                        ValidationHelper.VerificarMesmoNome(i.Nome, nomeInst));
+                }
+
+                if (instituicao == null)
+                {
+                    //CNPJ
+                    string? cnpj = ObterValor(row, ColunasProjetos.CNPJInstituicao);
+                    try
+                    {
+                        cnpj = ValidationHelper.VerificarCNPJ(cnpj);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "CNPJ Instituição", ex);
+                        erroNaLinha = true;
+                        cnpj = null;
+                        continue;
+                    }
+
+                    //País
+                    string? pais = ObterValor(row, ColunasProjetos.PaisInstituicao);
+                    try
+                    {
+                        ValidationHelper.VerificarPais(pais);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "País Instituição", ex);
+                        erroNaLinha = true;
+                        pais = null;
+                        continue;
+                    }
+
+                    //Estado
+                    string? estado = ObterValor(row, ColunasProjetos.EstadoInstituicao);
+                    try
+                    {
+                        if (pais != null && (pais.ToUpper() == "BRAZIL" || pais.ToUpper() == "BRASIL" || pais.ToUpper() == "BR"))
+                        {
+                            ValidationHelper.VerificarEstadoBR(estado);
+                        }
+                        else
+                        {
+                            ValidationHelper.VerificarTexto(estado);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Estado Instituição", ex);
+                        erroNaLinha = true;
+                        estado = null;
+                        continue;
+                    }
+
+                    //Município
+                    string? municipio = ObterValor(row, ColunasProjetos.MunicipioInstituicao);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(municipio);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Município Instituição", ex);
+                        erroNaLinha = true;
+                        municipio = null;
+                        continue;
+                    }
+
+                    //Endereço
+                    string? endereco = ObterValor(row, ColunasProjetos.EnderecoInstituicao);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(endereco);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Endereço Instituição", ex);
+                        erroNaLinha = true;
+                        endereco = null;
+                        continue;
+                    }
+
+                    //Tipo de Rede
+                    string? tipoRede = ObterValor(row, ColunasProjetos.TipoRedeInstituicao);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(tipoRede);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Tipo Rede Instituição", ex);
+                        erroNaLinha = true;
+                        tipoRede = null;
+                        continue;
+                    }
+
+                    //GRE
+                    string? gre = ObterValor(row, ColunasProjetos.GREInstituicao);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(gre);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "GRE Instituição", ex);
+                        erroNaLinha = true;
+                        gre = null;
+                        continue;
+                    }
+
+                    //IDEB
+                    double ideb = 0;
+                    try
+                    {
+                        ideb = ValidationHelper.VerificarNumeroDouble(ObterValor(row, ColunasProjetos.IDEBInstituicao));
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "IDEB Instituição", ex);
+                        erroNaLinha = true;
+                        continue;
+                    }
+
+                    //IDHM
+                    double idhm = 0;
+                    try
+                    {
+                        idhm = ValidationHelper.VerificarNumeroDouble(ObterValor(row, ColunasProjetos.IDHMInstituicao));
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "IDHM Instituição", ex);
+                        erroNaLinha = true;
+                        continue;
+                    }
+
+                    //Participante
+                    string? participante = ObterValor(row, ColunasProjetos.ParticipanteInstituicao);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(participante);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Participação Instituição", ex);
+                        erroNaLinha = true;
+                        participante = null;
+                        continue;
+                    }
+
+                    //Oferta Ensino
+                    string? ofertaEnsino = ObterValor(row, ColunasProjetos.OfertaEnsinoInstituicao);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(ofertaEnsino);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Oferta Ensino Instituição", ex);
+                        erroNaLinha = true;
+                        ofertaEnsino = null;
+                        continue;
+                    }
+
+                    //Adere Tempo Integral
+                    string? adere = ObterValor(row, ColunasProjetos.AdereInstituicao);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(adere);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Adesão Tempo Integral Instituição", ex);
+                        erroNaLinha = true;
+                        adere = null;
+                        continue;
+                    }
+
+                    //Tipologia Município
+                    string? tipologiaMunicipio = ObterValor(row, ColunasProjetos.TipologiaMunicipioInstituicao);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(tipologiaMunicipio);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Tipologia Município Instituição", ex);
+                        erroNaLinha = true;
+                        tipologiaMunicipio = null;
+                        continue;
+                    }
+
+                    instituicao = new Instituicao(
+                        nomeInst,
+                        cnpj,
+                        pais,
+                        estado,
+                        municipio,
+                        endereco,
+                        tipoRede,
+                        gre,
+                        ideb,
+                        idhm,
+                        participante,
+                        ofertaEnsino,
+                        adere,
+                        tipologiaMunicipio,
+                        "" // Apoio financeiro não mapeado nesta aba
+                    );
+                    _instituicoes.Add(instituicao);
+                }
+
+                //telefone
+                string telInst = ObterValor(row, ColunasProjetos.TelefoneInstituicao);
+                try
+                {
+                    telInst = ValidationHelper.VerificarTelefone(telInst);
+
+                    if (!instituicao.Telefone.Any(t => t.Numero == telInst))
+                        instituicao.Telefone.Add(new Telefone(telInst));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Telefone Instituição", ex);
                     erroNaLinha = true;
                     continue;
                 }
 
-                // ============================================================
-                // 2. INSTITUIÇÃO DO PROJETO
-                // ============================================================
+                //email
+                string emailInst = ObterValor(row, ColunasProjetos.EmailInstituicao);
                 try
                 {
-                    string nomeInst = ObterValor(row, ColunasProjetos.NomeInstituicao);
+                    ValidationHelper.VerificarEmail(emailInst);
 
-                    instituicao = _instituicoes.FirstOrDefault(i =>
-                        ValidationHelper.VerificarMesmoNome(i.Nome, nomeInst));
-
-                    if (instituicao == null)
-                    {
-                        instituicao = new Instituicao(
-                            nomeInst,
-                            ObterValor(row, ColunasProjetos.CNPJInstituicao),
-                            ObterValor(row, ColunasProjetos.PaisInstituicao),
-                            ObterValor(row, ColunasProjetos.EstadoInstituicao),
-                            ObterValor(row, ColunasProjetos.MunicipioInstituicao),
-                            ObterValor(row, ColunasProjetos.EnderecoInstituicao),
-                            ObterValor(row, ColunasProjetos.TipoRedeInstituicao),
-                            ObterValor(row, ColunasProjetos.GREInstituicao),
-                            ObterValor(row, ColunasProjetos.IDEBInstituicao),
-                            ObterValor(row, ColunasProjetos.IDHMInstituicao),
-                            ObterValor(row, ColunasProjetos.ParticipanteInstituicao),
-                            ObterValor(row, ColunasProjetos.OfertaEnsinoInstituicao),
-                            ObterValor(row, ColunasProjetos.AdereInstituicao),
-                            ObterValor(row, ColunasProjetos.TipologiaMunicipioInstituicao),
-                            "" // Apoio financeiro não mapeado nesta aba
-                        );
-                        _instituicoes.Add(instituicao);
-                    }
-
-                    string telInst = ObterValor(row, ColunasProjetos.TelefoneInstituicao);
-                    if (!instituicao.Telefone.Any(t => t.Numero == telInst))
-                        instituicao.Telefone.Add(new Telefone(telInst));
-
-                    string emailInst = ObterValor(row, ColunasProjetos.EmailInstituicao);
                     if (!instituicao.Email.Any(e => e.Endereco == emailInst))
                         instituicao.Email.Add(new Email(emailInst));
                 }
                 catch (Exception ex)
                 {
-                    RegistrarErro(resultado, numeroLinha, "Instituição do Projeto", ex);
+                    RegistrarErro(resultado, numeroLinha, "Email Instituição", ex);
                     erroNaLinha = true;
                     continue;
                 }
 
+                #endregion
+
+                #region Auxiliar Responsavel Instituicao
                 // ============================================================
                 // 3. VÍNCULO AUXILIAR (RESPONSÁVEL <-> INSTITUIÇÃO)
                 // ============================================================
@@ -1493,10 +1868,13 @@ namespace ConversorPlanilhaBD.Importacao
                     {
                         string funcao = ObterValor(row, ColunasProjetos.FuncaoResponsavelInstituicao);
 
+                        //Função
+                        ValidationHelper.VerificarTexto(funcao);
+
                         // Evita duplicar o mesmo vínculo se o responsável já estiver associado a essa escola
                         if (!responsavel.AuxInstituicaoResponsavel.Any(a => a.Instituicao == instituicao))
                         {
-                            var aux = new AuxInstituicaoResponsavel(responsavel, instituicao, funcao);
+                            aux = new AuxInstituicaoResponsavel(responsavel, instituicao, funcao);
                             responsavel.AuxInstituicaoResponsavel.Add(aux);
                             instituicao.AuxInstituicaoResponsavel.Add(aux);
                         }
@@ -1509,168 +1887,556 @@ namespace ConversorPlanilhaBD.Importacao
                     }
                 }
 
+                #endregion
+
+                #region Professor
                 // ============================================================
                 // 4. PROFESSOR ORIENTADOR
                 // ============================================================
+
+                string? nomeProf = ObterValor(row, ColunasProjetos.NomeProfessor);
+
                 try
                 {
-                    string nomeProf = ObterValor(row, ColunasProjetos.NomeProfessor);
-
-                    // Busca na RAM para evitar duplicados na hierarquia TPT
-                    professor = _professores.FirstOrDefault(p =>
-                        ValidationHelper.VerificarMesmoNome(p.Nome, nomeProf));
-
-                    if (professor == null)
-                    {
-                        professor = new Professor(
-                            nomeProf,
-                            ObterValor(row, ColunasProjetos.GeneroProfessor),
-                            ObterValor(row, ColunasProjetos.RacaProfessor),
-                            ObterValor(row, ColunasProjetos.MatriculaProfessor)
-                        );
-                        _professores.Add(professor);
-                    }
-
-                    // Documentos e Contatos do Professor
-                    string rgProf = ObterValor(row, ColunasProjetos.IdentidadeProfessor);
-                    string orgaoProf = ObterValor(row, ColunasProjetos.OrgaoExpedidorProfessor);
-                    if (!professor.Identidade.Any(i => i.Numero == rgProf))
-                        professor.Identidade.Add(new Identidade(rgProf, orgaoProf));
-
-                    string cpfProf = ObterValor(row, ColunasProjetos.CPFProfessor);
-                    if (!professor.Identidade.Any(i => i.Numero == cpfProf))
-                        professor.Identidade.Add(new Identidade(cpfProf));
-
-                    string telProf = ObterValor(row, ColunasProjetos.TelefoneProfessor);
-                    if (!professor.Telefone.Any(i => i.Numero == telProf))
-                        professor.Telefone.Add(new Telefone(telProf));
-
-                    string emailProf = ObterValor(row, ColunasProjetos.EmailProfessor);
-                    if (!professor.Email.Any(i => i.Endereco == emailProf))
-                        professor.Email.Add(new Email(emailProf));
-
+                    ValidationHelper.VerificarNome(nomeProf);
                 }
                 catch (Exception ex)
                 {
-                    RegistrarErro(resultado, numeroLinha, "Professor Orientador", ex);
+                    RegistrarErro(resultado, numeroLinha, "Nome Professor", ex);
+                    erroNaLinha = true;
+                    nomeProf = null;
+                    continue;
+                }
+
+                // Busca na RAM para evitar duplicados na hierarquia TPT
+                if (nomeProf != null)
+                {
+                    professor = _professores.FirstOrDefault(p =>
+                        ValidationHelper.VerificarMesmoNome(p.Nome, nomeProf));
+                }
+
+                if (professor == null)
+                {
+                    //gênero
+                    string? generoProf = ObterValor(row, ColunasProjetos.GeneroProfessor);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(generoProf);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Gênero Professor", ex);
+                        erroNaLinha = true;
+                        generoProf = null;
+                        continue;
+                    }
+
+                    //raça
+                    string? racaProf = ObterValor(row, ColunasProjetos.RacaProfessor);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(racaProf);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Raça Professor", ex);
+                        erroNaLinha = true;
+                        racaProf = null;
+                        continue;
+                    }
+
+                    //matrícula
+                    string? matriculaProf = ObterValor(row, ColunasProjetos.MatriculaProfessor);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(matriculaProf);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Matrícula Professor", ex);
+                        erroNaLinha = true;
+                        matriculaProf = null;
+                        continue;
+                    }
+
+                    professor = new Professor(
+                        nomeProf,
+                        generoProf,
+                        racaProf,
+                        matriculaProf
+                    );
+                    _professores.Add(professor);
+                }
+
+                // Documentos e Contatos do Professor
+
+                //RG / Identidade
+                string rgProf = ObterValor(row, ColunasProjetos.IdentidadeProfessor);
+                string orgaoProf = ObterValor(row, ColunasProjetos.OrgaoExpedidorProfessor);
+                try
+                {
+                    rgProf = ValidationHelper.VerificarIdentidade(rgProf);
+                    ValidationHelper.VerificarTexto(orgaoProf);
+
+                    if (!professor.Identidade.Any(i => i.Numero == rgProf))
+                        professor.Identidade.Add(new Identidade(rgProf, orgaoProf));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Identidade Professor", ex);
                     erroNaLinha = true;
                     continue;
                 }
+
+                //CPF
+                string cpfProf = ObterValor(row, ColunasProjetos.CPFProfessor);
+                try
+                {
+                    cpfProf = ValidationHelper.VerificarIdentidade(cpfProf);
+
+                    if (!professor.Identidade.Any(i => i.Numero == cpfProf))
+                        professor.Identidade.Add(new Identidade(cpfProf));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "CPF Professor", ex);
+                    erroNaLinha = true;
+                    continue;
+                }
+
+                //telefone
+                string telProf = ObterValor(row, ColunasProjetos.TelefoneProfessor);
+                try
+                {
+                    telProf = ValidationHelper.VerificarTelefone(telProf);
+
+                    if (!professor.Telefone.Any(i => i.Numero == telProf))
+                        professor.Telefone.Add(new Telefone(telProf));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Telefone Professor", ex);
+                    erroNaLinha = true;
+                    continue;
+                }
+
+                //email
+                string emailProf = ObterValor(row, ColunasProjetos.EmailProfessor);
+                try
+                {
+                    ValidationHelper.VerificarEmail(emailProf);
+
+                    if (!professor.Email.Any(i => i.Endereco == emailProf))
+                        professor.Email.Add(new Email(emailProf));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Email Professor", ex);
+                    erroNaLinha = true;
+                    continue;
+                }
+                #endregion
+
+                #region Projetos
                 // ============================================================
                 // 5. PROJETOS
                 // ============================================================
 
+                string? nomeProjeto = ObterValor(row, ColunasProjetos.NomeProjeto);
+
                 try
                 {
-
-                    projeto = new Projeto
-                    (
-                        ObterValor(row, ColunasProjetos.Deficiencia),
-                        ObterValor(row, ColunasProjetos.Participacao),
-                        ObterValor(row, ColunasProjetos.CategoriaInscricao),
-                        ObterValor(row, ColunasProjetos.CarimboDataHora),
-                        ObterValor(row, ColunasProjetos.NomeProjeto),
-                        ObterValor(row, ColunasProjetos.PalavrasChave),
-                        ObterValor(row, ColunasProjetos.ODS),
-                        ObterValor(row, ColunasProjetos.Tema),
-                        ObterValor(row, ColunasProjetos.Area),
-                        ObterValor(row, ColunasProjetos.Objetivo),
-                        ObterValor(row, ColunasProjetos.Resumo)
-                    );
-
-                    // Associa o Responsável (Se criado/recuperado com sucesso)
-                    if (responsavel != null)
-                    {
-                        projeto.Responsavel = responsavel;
-                        responsavel.Projetos.Add(projeto);
-                    }
-
-                    // Associa o Professor Orientador
-                    if (professor != null)
-                    {
-                        projeto.Professor = professor;
-                        professor.Projetos.Add(projeto);
-                    }
+                    ValidationHelper.VerificarNome(nomeProjeto);
                 }
                 catch (Exception ex)
                 {
-                    RegistrarErro(resultado, numeroLinha, "Dados do Projeto", ex);
+                    RegistrarErro(resultado, numeroLinha, "Nome Projeto", ex);
                     erroNaLinha = true;
-                    continue; // Se falhar a criação do projeto, pula a linha (evita órfãos)
+                    nomeProjeto = null;
+                    continue;
                 }
 
+                if (nomeProjeto != null)
+                {
+                    projeto = _projetosImportados.FirstOrDefault(p =>
+                        ValidationHelper.VerificarMesmoNome(p.Nome, nomeProjeto));
+                }
+
+                if (projeto == null)
+                {
+                    string? deficiencia = ObterValor(row, ColunasProjetos.Deficiencia);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(deficiencia);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Deficiência Projeto", ex);
+                        erroNaLinha = true;
+                        deficiencia = null;
+                        continue;
+                    }
+
+                    string? participacao = ObterValor(row, ColunasProjetos.Participacao);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(participacao);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Participação Projeto", ex);
+                        erroNaLinha = true;
+                        participacao = null;
+                        continue;
+                    }
+
+                    string? categoriaInscricao = ObterValor(row, ColunasProjetos.CategoriaInscricao);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(categoriaInscricao);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Categoria de Inscrição Projeto", ex);
+                        erroNaLinha = true;
+                        categoriaInscricao = null;
+                        continue;
+                    }
+
+                    DateTime? carimboDataHora = null;
+                    try
+                    {
+                        carimboDataHora = ValidationHelper.VerificarDataHora(ObterValor(row, ColunasProjetos.CarimboDataHora));
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Carimbo de Data/Hora Projeto", ex);
+                        erroNaLinha = true;
+                        continue;
+                    }
+
+                    string? palavrasChave = ObterValor(row, ColunasProjetos.PalavrasChave);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(palavrasChave);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Palavras-Chave Projeto", ex);
+                        erroNaLinha = true;
+                        palavrasChave = null;
+                        continue;
+                    }
+
+                    string? ods = ObterValor(row, ColunasProjetos.ODS);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(ods);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "ODS Projeto", ex);
+                        erroNaLinha = true;
+                        ods = null;
+                        continue;
+                    }
+
+                    string? tema = ObterValor(row, ColunasProjetos.Tema);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(tema);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Tema Projeto", ex);
+                        erroNaLinha = true;
+                        tema = null;
+                        continue;
+                    }
+
+                    string? area = ObterValor(row, ColunasProjetos.Area);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(area);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Área Projeto", ex);
+                        erroNaLinha = true;
+                        area = null;
+                        continue;
+                    }
+
+                    string? objetivo = ObterValor(row, ColunasProjetos.Objetivo);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(objetivo);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Objetivo Projeto", ex);
+                        erroNaLinha = true;
+                        objetivo = null;
+                        continue;
+                    }
+
+                    string? resumo = ObterValor(row, ColunasProjetos.Resumo);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(resumo);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Resumo Projeto", ex);
+                        erroNaLinha = true;
+                        resumo = null;
+                        continue;
+                    }
+
+                    projeto = new Projeto
+                    (
+                        nomeProjeto,
+                        deficiencia,
+                        participacao,
+                        categoriaInscricao,
+                        carimboDataHora,
+                        palavrasChave,
+                        ods,
+                        tema,
+                        area,
+                        objetivo,
+                        resumo
+                    );
+                    _projetosImportados.Add(projeto);
+                }
+
+                // Associa o Responsável (Se criado/recuperado com sucesso)
+                if (responsavel != null)
+                {
+                    projeto.Responsavel = responsavel;
+                    responsavel.Projetos.Add(projeto);
+                }
+
+                // Associa o Professor Orientador
+                if (professor != null)
+                {
+                    projeto.Professor = professor;
+                    professor.Projetos.Add(projeto);
+                }
+                #endregion
+
+                #region Alunos
                 // ============================================================
                 // 6. ALUNOS
                 // ============================================================
 
                 // ALUNO 1
+                string? nomeAluno = ObterValor(row, ColunasProjetos.NomeAluno1);
+
                 try
                 {
-                    aluno1 = new Pessoa
-                    (
-                        ObterValor(row, ColunasProjetos.NomeAluno1),
-                        ObterValor(row, ColunasProjetos.GeneroAluno1),
-                        ObterValor(row, ColunasProjetos.RacaAluno1)
-                    );
-
-                    string rgAluno1 = ObterValor(row, ColunasProjetos.IdentidadeAluno1);
-                    if (!aluno1.Identidade.Any(i => i.Numero == rgAluno1))
-                        aluno1.Identidade.Add(new Identidade(rgAluno1));
-
-                    string cpfAluno1 = ObterValor(row, ColunasProjetos.CPFAluno1);
-                    if (!aluno1.Identidade.Any(i => i.Numero == cpfAluno1))
-                        aluno1.Identidade.Add(new Identidade(cpfAluno1));
-
-                    string emailAluno1 = ObterValor(row, ColunasProjetos.EmailAluno1);
-                    if (!aluno1.Email.Any(i => i.Endereco == emailAluno1))
-                        aluno1.Email.Add(new Email(emailAluno1));
-
-                    _alunos.Add(aluno1);
-
+                    ValidationHelper.VerificarNome(nomeAluno);
                 }
                 catch (Exception ex)
                 {
-                    RegistrarErro(resultado, numeroLinha, "Aluno 1", ex);
+                    RegistrarErro(resultado, numeroLinha, "Nome Aluno 1", ex);
+                    erroNaLinha = true;
+                    nomeAluno = null;
+                    continue;
+                }
+
+                if (nomeAluno != null)
+                {
+                    aluno = _alunos.FirstOrDefault(p =>
+                        ValidationHelper.VerificarMesmoNome(p.Nome, nomeAluno));
+                }
+
+                if (aluno == null)
+                {
+                    //idGenero
+                    string? generoAluno = ObterValor(row, ColunasProjetos.GeneroAluno1);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(generoAluno);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Gênero Aluno 1", ex);
+                        erroNaLinha = true;
+                        generoAluno = null;
+                        continue;
+                    }
+
+                    //raça
+                    string? racaAluno = ObterValor(row, ColunasProjetos.RacaAluno1);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(racaAluno);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Raça Aluno 1", ex);
+                        erroNaLinha = true;
+                        racaAluno = null;
+                        continue;
+                    }
+                    aluno = new Pessoa(nomeAluno, generoAluno, racaAluno);
+                    _alunos.Add(aluno);
+                }
+                //RG / Identidade
+                string rgAluno = ObterValor(row, ColunasProjetos.IdentidadeAluno1);
+                string orgaoAluno = ObterValor(row, ColunasProjetos.OrgaoExpedidorAluno1);
+                try
+                {
+                    rgAluno = ValidationHelper.VerificarIdentidade(rgAluno);
+                    ValidationHelper.VerificarTexto(orgaoAluno);
+
+                    if (!aluno.Identidade.Any(i => i.Numero == rgAluno))
+                        aluno.Identidade.Add(new Identidade(rgProf, orgaoAluno));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Identidade Aluno", ex);
+                    erroNaLinha = true;
+                    continue;
+                }
+
+                //CPF
+                string cpfAluno = ObterValor(row, ColunasProjetos.CPFAluno1);
+                try
+                {
+                    cpfAluno = ValidationHelper.VerificarIdentidade(cpfAluno);
+
+                    if (!aluno.Identidade.Any(i => i.Numero == cpfAluno))
+                        aluno.Identidade.Add(new Identidade(cpfAluno));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "CPF Aluno 1", ex);
+                    erroNaLinha = true;
+                    continue;
+                }
+
+                //email
+                string emailAluno = ObterValor(row, ColunasProjetos.EmailAluno1);
+                try
+                {
+                    ValidationHelper.VerificarEmail(emailAluno);
+
+                    if (!aluno.Email.Any(i => i.Endereco == emailAluno))
+                        aluno.Email.Add(new Email(emailAluno));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Email Aluno 1", ex);
                     erroNaLinha = true;
                     continue;
                 }
 
                 // ALUNO 2
+                nomeAluno = ObterValor(row, ColunasProjetos.NomeAluno2);
+
                 try
                 {
-
-                    aluno2 = new Pessoa
-                    (
-                        ObterValor(row, ColunasProjetos.NomeAluno1),
-                        ObterValor(row, ColunasProjetos.GeneroAluno1),
-                        ObterValor(row, ColunasProjetos.RacaAluno1)
-                    );
-
-                    string rgAluno2 = ObterValor(row, ColunasProjetos.IdentidadeAluno2);
-                    if (!aluno2.Identidade.Any(i => i.Numero == rgAluno2))
-                        aluno2.Identidade.Add(new Identidade(rgAluno2));
-
-                    string cpfAluno2 = ObterValor(row, ColunasProjetos.CPFAluno2);
-                    if (!aluno2.Identidade.Any(i => i.Numero == cpfAluno2))
-                        aluno2.Identidade.Add(new Identidade(cpfAluno2));
-
-                    string emailAluno2 = ObterValor(row, ColunasProjetos.EmailAluno2);
-                    if (!aluno2.Email.Any(i => i.Endereco == emailAluno2))
-                        aluno2.Email.Add(new Email(emailAluno2));
-
-                    _alunos.Add(aluno2);
-
+                    ValidationHelper.VerificarNome(nomeAluno);
                 }
                 catch (Exception ex)
                 {
-                    RegistrarErro(resultado, numeroLinha, "Aluno 2", ex);
+                    RegistrarErro(resultado, numeroLinha, "Nome Aluno 2", ex);
+                    erroNaLinha = true;
+                    nomeAluno = null;
+                    continue;
+                }
+
+                if (nomeAluno != null)
+                {
+                    aluno = _alunos.FirstOrDefault(p =>
+                        ValidationHelper.VerificarMesmoNome(p.Nome, nomeAluno));
+                }
+
+                if (aluno == null)
+                {
+                    //idGenero
+                    string? generoAluno = ObterValor(row, ColunasProjetos.GeneroAluno2);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(generoAluno);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Gênero Aluno 2", ex);
+                        erroNaLinha = true;
+                        generoAluno = null;
+                        continue;
+                    }
+
+                    //raça
+                    string? racaAluno = ObterValor(row, ColunasProjetos.RacaAluno2);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(racaAluno);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Raça Aluno 2", ex);
+                        erroNaLinha = true;
+                        racaAluno = null;
+                        continue;
+                    }
+                    aluno = new Pessoa(nomeAluno, generoAluno, racaAluno);
+                    _alunos.Add(aluno);
+                }
+                //RG / Identidade
+                rgAluno = ObterValor(row, ColunasProjetos.IdentidadeAluno2);
+                orgaoAluno = ObterValor(row, ColunasProjetos.OrgaoExpedidorAluno2);
+                try
+                {
+                    rgAluno = ValidationHelper.VerificarIdentidade(rgAluno);
+                    ValidationHelper.VerificarTexto(orgaoAluno);
+
+                    if (!aluno.Identidade.Any(i => i.Numero == rgAluno))
+                        aluno.Identidade.Add(new Identidade(rgProf, orgaoAluno));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Identidade Aluno 2", ex);
                     erroNaLinha = true;
                     continue;
                 }
 
-                // ============================================================
-                // CONTROLE DE PROGRESSO E RESULTADO DA LINHA
-                // ============================================================
+                //CPF
+                cpfAluno = ObterValor(row, ColunasProjetos.CPFAluno1);
+                try
+                {
+                    cpfAluno = ValidationHelper.VerificarIdentidade(cpfAluno);
+
+                    if (!aluno.Identidade.Any(i => i.Numero == cpfAluno))
+                        aluno.Identidade.Add(new Identidade(cpfAluno));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "CPF Aluno 2", ex);
+                    erroNaLinha = true;
+                    continue;
+                }
+
+                //email
+                emailAluno = ObterValor(row, ColunasProjetos.EmailAluno1);
+                try
+                {
+                    ValidationHelper.VerificarEmail(emailAluno);
+
+                    if (!aluno.Email.Any(i => i.Endereco == emailAluno))
+                        aluno.Email.Add(new Email(emailAluno));
+                }
+                catch (Exception ex)
+                {
+                    RegistrarErro(resultado, numeroLinha, "Email Aluno 2", ex);
+                    erroNaLinha = true;
+                    continue;
+                }
+                #endregion
+
                 if (!erroNaLinha)
                 {
                     resultado.RegistrarSucesso();
