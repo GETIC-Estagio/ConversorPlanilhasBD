@@ -198,8 +198,8 @@ namespace ConversorPlanilhaBD.Importacao
                 catch (Exception ex)
                 {
                     db.ChangeTracker.Clear();
-                    Erro?.Invoke($"Banco - Erro no Projeto '{projeto.NomeProjeto}': {ex.Message}");
-                    resultado.RegistrarErro(0, $"Banco [Projeto: {projeto.NomeProjeto}]: {ex.Message}");
+                    Erro?.Invoke($"Banco - Erro no Projeto '{projeto.Nome}': {ex.Message}");
+                    resultado.RegistrarErro(0, $"Banco [Projeto: {projeto.Nome}]: {ex.Message}");
                 }
             }
 
@@ -380,7 +380,6 @@ namespace ConversorPlanilhaBD.Importacao
         }
         #endregion
 
-
         //Serve para ligar com a UI do WinForm
         //mostrando o contador de erro e acerto
         private void RegistrarErro(
@@ -420,7 +419,6 @@ namespace ConversorPlanilhaBD.Importacao
 
 
                 #region Responsavel
-
                 // ============================================================
                 // 1. RESPONSÁVEL DA SUBMISSÃO
                 // ============================================================
@@ -1372,6 +1370,7 @@ namespace ConversorPlanilhaBD.Importacao
             }
         }
 
+        //Metodo para Importar os Pre-projetos
         private void ImportarPreProjetos(ResultadoImportacao resultado)
         {
             var linhas = _preProjetos.RowsUsed().Skip(1).ToList();
