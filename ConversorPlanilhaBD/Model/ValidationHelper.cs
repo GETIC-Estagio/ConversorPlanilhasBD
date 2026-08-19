@@ -91,13 +91,11 @@ namespace ConversorPlanilhaBD.Model
         //So valida se contem algo
         //E se tem arroba
         //Validacao adicional é necessaria mais tarde
-        public static bool VerificarEmail(string email)
+        public static void VerificarEmail(string email)
         {
             if (string.IsNullOrEmpty(email)) throw new ArgumentException("Email não pode ser vazio");
 
             if (!email.Contains('@')) throw new ArgumentException("Email precisa conter um @");
-
-            return true;
         }
 
         //Verifica se numero não é vazio
@@ -235,7 +233,7 @@ namespace ConversorPlanilhaBD.Model
 
 
         //verificar se o pais de fato existe
-        public static string VerificarPais(string pais)
+        public static void VerificarPais(string pais)
         {
             if (string.IsNullOrEmpty(pais)) throw new ArgumentException("O campo não pode ser vazio");
 
@@ -247,13 +245,11 @@ namespace ConversorPlanilhaBD.Model
                 r.TwoLetterISORegionName.Equals(pais, StringComparison.OrdinalIgnoreCase)); //Aceita siglas US, BR
 
             if (!paisExiste) throw new ArgumentException("País não existe");
-
-            return pais;
         }
 
 
         //Verifica apenas estados do brasil
-        public static string VerificarEstadoBR(string estado)
+        public static void VerificarEstadoBR(string estado)
         {
             if (string.IsNullOrEmpty(estado)) throw new ArgumentException("O campo não pode ser vazio");
 
@@ -265,8 +261,6 @@ namespace ConversorPlanilhaBD.Model
             );
 
             if (!estadoExiste) throw new ArgumentException("Estado não existe");
-
-            return estado;
         }
 
         //Verifica numeros double
