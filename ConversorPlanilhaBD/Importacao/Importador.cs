@@ -223,10 +223,10 @@ namespace ConversorPlanilhaBD.Importacao
             {
                 try
                 {
-                    if (projeto.Responsavel != null && projeto.Responsavel.Id > 0) 
+                    if (projeto.Responsavel != null && projeto.Responsavel.Id > 0)
                         projeto.ResponsavelId = projeto.Responsavel.Id;
 
-                    if (projeto.Professor != null && projeto.Professor.Id > 0) 
+                    if (projeto.Professor != null && projeto.Professor.Id > 0)
                         projeto.ProfessorId = projeto.Professor.Id;
 
                     projeto.Responsavel = null;
@@ -249,7 +249,7 @@ namespace ConversorPlanilhaBD.Importacao
 
             foreach (var projeto in _projetosImportados)
             {
-                if (projeto.Id <= 0) continue;
+                if (projeto.Id <= 0) 
 
                 foreach (var aluno in projeto.Alunos)
                 {
@@ -471,7 +471,6 @@ namespace ConversorPlanilhaBD.Importacao
                 AuxInstituicaoResponsavel? aux = null;
                 Feira? feira = null;
 
-
                 #region Responsavel
                 // ============================================================
                 // 1. RESPONSÁVEL DA SUBMISSÃO
@@ -493,7 +492,7 @@ namespace ConversorPlanilhaBD.Importacao
                     RegistrarErro(resultado, numeroLinha, "Nome Responsável", ex);
                     erroNaLinha = true;
                     nomeCompleto = null;
-                    continue;
+                    
                 }
 
                 //Se o nome existe, testa para ver se aquele responsavel ja existe
@@ -519,21 +518,21 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Identidade Gênero Responsável", ex);
                         erroNaLinha = true;
                         idGenero = null;
-                        continue;
+                        
                     }
 
                     //raça
                     string? raca = ObterValor(row, ColunasFeira.RacaPessoa);
                     try
                     {
-                        ValidationHelper.VerificarTexto(idGenero);
+                        ValidationHelper.VerificarTexto(raca);
                     }
                     catch (Exception ex)
                     {
                         RegistrarErro(resultado, numeroLinha, "Raça Responsável", ex);
                         erroNaLinha = true;
                         raca = null;
-                        continue;
+                        
                     }
 
                     //dataNascimento
@@ -546,11 +545,11 @@ namespace ConversorPlanilhaBD.Importacao
                     {
                         RegistrarErro(resultado, numeroLinha, "Data Nascimento Responsável", ex);
                         erroNaLinha = true;
-                        continue;
+                        
                     }
 
                     //Professor
-                    string? professor = ObterValor(row, ColunasFeira.RacaPessoa);
+                    string? professor = ObterValor(row, ColunasFeira.EhProfessor);
                     try
                     {
                         ValidationHelper.VerificarTexto(professor); ;
@@ -560,7 +559,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Professor Responsável", ex);
                         erroNaLinha = true;
                         professor = null;
-                        continue;
+                        
                     }
 
                     //Nível Ensino
@@ -574,7 +573,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Nível Ensino Responsável", ex);
                         erroNaLinha = true;
                         nivelEnsino = null;
-                        continue;
+                        
                     }
 
                     //Participou Ciência Jovem
@@ -588,7 +587,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Participou Ciência Jovem Responsável", ex);
                         erroNaLinha = true;
                         participouCienciaJovem = null;
-                        continue;
+                        
                     }
 
                     //Experiência Feiras
@@ -602,7 +601,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Experiência Feiras Responsável", ex);
                         erroNaLinha = true;
                         experienciaFeiras = null;
-                        continue;
+                        
                     }
 
                     //Recomendação
@@ -616,7 +615,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Recomendação Responsável", ex);
                         erroNaLinha = true;
                         recomendacao = null;
-                        continue;
+                        
                     }
 
                     responsavelSubmissao = new Responsavel(
@@ -648,7 +647,7 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Email Responsável", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 //telefone
@@ -664,11 +663,11 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Telefone Responsável", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 //Identidade
-                string docResp = ObterValor(row, ColunasProjetos.DocumentoIdentificacaoResponsavel);
+                string docResp = ObterValor(row, ColunasFeira.DocumentoIdentificacao);
                 try
                 {
                     docResp = ValidationHelper.VerificarIdentidade(docResp);
@@ -680,7 +679,7 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Identidade Responsável", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 #endregion
@@ -701,7 +700,7 @@ namespace ConversorPlanilhaBD.Importacao
                     RegistrarErro(resultado, numeroLinha, "Nome Instituição", ex);
                     erroNaLinha = true;
                     nomeInst = null;
-                    continue;
+                    
                 }
 
                 //Procura para saber se ja existe uma instituicao de mesmo nome
@@ -726,7 +725,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "CNPJ Instituição", ex);
                         erroNaLinha = true;
                         cnpj = null;
-                        continue;
+                        
                     }
 
                     // País
@@ -740,7 +739,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "País Instituição", ex);
                         erroNaLinha = true;
                         pais = null;
-                        continue;
+                        
                     }
 
                     // Estado
@@ -761,7 +760,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Estado Instituição", ex);
                         erroNaLinha = true;
                         estado = null;
-                        continue;
+                        
                     }
 
                     // Município
@@ -775,7 +774,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Município Instituição", ex);
                         erroNaLinha = true;
                         municipio = null;
-                        continue;
+                        
                     }
 
                     // Endereço
@@ -789,7 +788,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Endereço Instituição", ex);
                         erroNaLinha = true;
                         endereco = null;
-                        continue;
+                        
                     }
 
                     // Tipo de Rede
@@ -803,7 +802,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Tipo Rede Instituição", ex);
                         erroNaLinha = true;
                         tipoRede = null;
-                        continue;
+                        
                     }
 
                     // GRE
@@ -817,7 +816,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "GRE Instituição", ex);
                         erroNaLinha = true;
                         gre = null;
-                        continue;
+                        
                     }
 
                     // IDEB
@@ -830,7 +829,7 @@ namespace ConversorPlanilhaBD.Importacao
                     {
                         RegistrarErro(resultado, numeroLinha, "IDEB Instituição", ex);
                         erroNaLinha = true;
-                        continue;
+                        
                     }
 
                     // IDHM
@@ -843,7 +842,7 @@ namespace ConversorPlanilhaBD.Importacao
                     {
                         RegistrarErro(resultado, numeroLinha, "IDHM Instituição", ex);
                         erroNaLinha = true;
-                        continue;
+                        
                     }
 
                     // Participante
@@ -857,7 +856,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Participação Instituição", ex);
                         erroNaLinha = true;
                         participante = null;
-                        continue;
+                        
                     }
 
                     // Oferta Ensino
@@ -871,7 +870,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Oferta Ensino Instituição", ex);
                         erroNaLinha = true;
                         ofertaEnsino = null;
-                        continue;
+                        
                     }
 
                     // Adere Tempo Integral
@@ -885,7 +884,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Adesão Tempo Integral Instituição", ex);
                         erroNaLinha = true;
                         adere = null;
-                        continue;
+                        
                     }
 
                     // Tipologia Município
@@ -899,7 +898,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Tipologia Município Instituição", ex);
                         erroNaLinha = true;
                         tipologiaMunicipio = null;
-                        continue;
+                        
                     }
 
                     // Apoio Financeiro
@@ -913,7 +912,50 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Apoio Financeiro Instituição", ex);
                         erroNaLinha = true;
                         apoioFinanceiro = null;
-                        continue;
+                        
+                    }
+
+                    //Participaco CienciaJovem Instituicao
+                    string? participacaoCJ = ObterValor(row, ColunasFeira.ParticipouCienciaJovemFeira);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(participacaoCJ);
+                        if (participacaoCJ.ToUpper() == "SIM")
+                        {
+                            string? detalhes = ObterValor(row, ColunasFeira.AnosParticipacaoInstituicao);
+                            try
+                            {
+                                ValidationHelper.VerificarTexto(detalhes);
+                            }
+                            catch (Exception ex)
+                            {
+                                RegistrarErro(resultado, numeroLinha, "Participacao Ciencia Jovem Instituicao", ex);
+                                erroNaLinha = true;
+                                detalhes = null;
+                                
+                            }
+
+                            int quantosProjetos = 0;
+                            try
+                            {
+                                quantosProjetos = ValidationHelper.VerificarNumeroInt(ObterValor(row, ColunasFeira.QuantosProjetos));
+                            }
+                            catch (Exception ex)
+                            {
+                                RegistrarErro(resultado, numeroLinha, "Participacao Ciencia Jovem Instituicao", ex);
+                                erroNaLinha = true;
+                                
+                            }
+
+                            participacaoCJ = $"{participacaoCJ}. {detalhes}. Quantidade: {quantosProjetos}";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Participacao Ciencia Jovem Instituicao", ex);
+                        erroNaLinha = true;
+                        participacaoCJ = null;
+                        
                     }
 
                     instituicaoSede = new Instituicao(
@@ -931,7 +973,8 @@ namespace ConversorPlanilhaBD.Importacao
                         ofertaEnsino,
                         adere,
                         tipologiaMunicipio,
-                        apoioFinanceiro
+                        apoioFinanceiro,
+                        participacaoCJ
                     );
                     _instituicoes.Add(instituicaoSede);
                 }
@@ -949,7 +992,7 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Telefone Instituição", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 // Email Instituição
@@ -965,7 +1008,7 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Email Instituição", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 #endregion
@@ -997,7 +1040,7 @@ namespace ConversorPlanilhaBD.Importacao
                     {
                         RegistrarErro(resultado, numeroLinha, "Vínculo Responsável/Instituição", ex);
                         erroNaLinha = true;
-                        continue;
+                        
                     }
                 }
 
@@ -1019,7 +1062,7 @@ namespace ConversorPlanilhaBD.Importacao
                     RegistrarErro(resultado, numeroLinha, "Nome Instituição Organizadora", ex);
                     erroNaLinha = true;
                     nomeOrganizadora = null;
-                    continue;
+                    
                 }
 
                 if (nomeOrganizadora != null)
@@ -1053,7 +1096,7 @@ namespace ConversorPlanilhaBD.Importacao
                     RegistrarErro(resultado, numeroLinha, "Nome Pessoa Contato Feira", ex);
                     erroNaLinha = true;
                     nomeContato = null;
-                    continue;
+                    
                 }
 
                 if (nomeContato != null)
@@ -1083,7 +1126,7 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Telefone Pessoa Contato Feira", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 // Email Contato
@@ -1099,7 +1142,7 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Email Pessoa Contato Feira", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 #endregion
@@ -1120,9 +1163,8 @@ namespace ConversorPlanilhaBD.Importacao
                     RegistrarErro(resultado, numeroLinha, "Nome da Feira", ex);
                     erroNaLinha = true;
                     nomeFeira = null;
-                    continue;
+                    
                 }
-
 
                 if (nomeFeira != null)
                 {
@@ -1144,7 +1186,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Alcance da Feira", ex);
                         erroNaLinha = true;
                         alcance = null;
-                        continue;
+                        
                     }
 
                     //Endereco
@@ -1158,7 +1200,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Endereço da Feira", ex);
                         erroNaLinha = true;
                         enderecoFeira = null;
-                        continue;
+                        
                     }
 
                     //Estado
@@ -1181,7 +1223,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Estado da Feira", ex);
                         erroNaLinha = true;
                         estadoFeira = null;
-                        continue;
+                        
                     }
 
                     //Periodo Realizacao
@@ -1195,7 +1237,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Período de Realização da Feira", ex);
                         erroNaLinha = true;
                         periodoRealizacao = null;
-                        continue;
+                        
                     }
 
                     //Data realizacao
@@ -1209,7 +1251,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Data de Realização da Feira", ex);
                         erroNaLinha = true;
                         dataRealizacao = null;
-                        continue;
+                        
                     }
 
                     //Modalidade
@@ -1223,7 +1265,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Modalidade da Feira", ex);
                         erroNaLinha = true;
                         modalidade = null;
-                        continue;
+                        
                     }
 
                     //Num projeto
@@ -1236,7 +1278,7 @@ namespace ConversorPlanilhaBD.Importacao
                     {
                         RegistrarErro(resultado, numeroLinha, "Número de Projetos Participantes", ex);
                         erroNaLinha = true;
-                        continue;
+                        
                     }
 
                     //areasConhecimento
@@ -1250,7 +1292,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Áreas de Conhecimento da Feira", ex);
                         erroNaLinha = true;
                         areasConhecimento = null;
-                        continue;
+                        
                     }
 
                     //nivel ensino
@@ -1264,7 +1306,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Nível de Ensino da Feira", ex);
                         erroNaLinha = true;
                         nivelEnsinoAlunos = null;
-                        continue;
+                        
                     }
 
                     //numero escolas
@@ -1277,7 +1319,7 @@ namespace ConversorPlanilhaBD.Importacao
                     {
                         RegistrarErro(resultado, numeroLinha, "Número de Escolas Participantes", ex);
                         erroNaLinha = true;
-                        continue;
+                        
                     }
 
                     //afiliacoes
@@ -1291,7 +1333,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Feira Afiliada", ex);
                         erroNaLinha = true;
                         afiliada = null;
-                        continue;
+                        
                     }
 
                     //processo de selecao
@@ -1305,7 +1347,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Processo de Seleção da Feira", ex);
                         erroNaLinha = true;
                         processoSelecao = null;
-                        continue;
+                        
                     }
 
                     //periodo de elaboração
@@ -1319,7 +1361,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Período de Elaboração da Feira", ex);
                         erroNaLinha = true;
                         periodoElaboracao = null;
-                        continue;
+                        
                     }
 
                     //projetos avaliados
@@ -1327,13 +1369,30 @@ namespace ConversorPlanilhaBD.Importacao
                     try
                     {
                         ValidationHelper.VerificarTexto(projetosAvaliados);
+                        if (projetosAvaliados.ToUpper() == "SIM")
+                        {
+                            string? detalhes = ObterValor(row, ColunasFeira.FormaAvaliacao);
+                            try
+                            {
+                                ValidationHelper.VerificarTexto(detalhes);
+                            }
+                            catch (Exception ex)
+                            {
+                                RegistrarErro(resultado, numeroLinha, "Projetos Avaliados da Feira", ex);
+                                erroNaLinha = true;
+                                detalhes = null;
+                                
+                            }
+
+                            projetosAvaliados = $"{projetosAvaliados}. {detalhes}";
+                        }
                     }
                     catch (Exception ex)
                     {
                         RegistrarErro(resultado, numeroLinha, "Projetos Avaliados da Feira", ex);
                         erroNaLinha = true;
                         projetosAvaliados = null;
-                        continue;
+                        
                     }
 
                     //quantos projetos
@@ -1346,7 +1405,7 @@ namespace ConversorPlanilhaBD.Importacao
                     {
                         RegistrarErro(resultado, numeroLinha, "Quantidade Total de Projetos Apresentados", ex);
                         erroNaLinha = true;
-                        continue;
+                        
                     }
 
                     //Carimbo Data Hora
@@ -1359,7 +1418,7 @@ namespace ConversorPlanilhaBD.Importacao
                     {
                         RegistrarErro(resultado, numeroLinha, "Carimbo de Data/Hora da Feira", ex);
                         erroNaLinha = true;
-                        continue;
+                        
                     }
 
                     feira = new Feira(
@@ -1378,7 +1437,6 @@ namespace ConversorPlanilhaBD.Importacao
                         processoSelecao,
                         periodoElaboracao,
                         projetosAvaliados,
-                        quantosProjetos,
                         carimboDataHora
                     );
                     _feirasImportadas.Add(feira);
@@ -1458,7 +1516,7 @@ namespace ConversorPlanilhaBD.Importacao
                     RegistrarErro(resultado, numeroLinha, "Nome Responsável", ex);
                     erroNaLinha = true;
                     nomeCompleto = null;
-                    continue;
+                    
                 }
 
                 // Busca na RAM para evitar duplicados
@@ -1481,7 +1539,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Identidade Gênero Responsável", ex);
                         erroNaLinha = true;
                         idGenero = null;
-                        continue;
+                        
                     }
 
                     //raça
@@ -1495,7 +1553,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Raça Responsável", ex);
                         erroNaLinha = true;
                         raca = null;
-                        continue;
+                        
                     }
 
                     //dataNascimento
@@ -1508,7 +1566,7 @@ namespace ConversorPlanilhaBD.Importacao
                     {
                         RegistrarErro(resultado, numeroLinha, "Data Nascimento Responsável", ex);
                         erroNaLinha = true;
-                        continue;
+                        
                     }
 
                     //Professor
@@ -1522,7 +1580,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Professor Responsável", ex);
                         erroNaLinha = true;
                         professor2 = null;
-                        continue;
+                        
                     }
 
                     //Nível Ensino
@@ -1536,7 +1594,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Nível Ensino Responsável", ex);
                         erroNaLinha = true;
                         nivelEnsino = null;
-                        continue;
+                        
                     }
 
                     //Participante
@@ -1550,7 +1608,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Participante Responsável", ex);
                         erroNaLinha = true;
                         participante = null;
-                        continue;
+                        
                     }
 
                     //Experiência Feiras
@@ -1564,7 +1622,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Experiência Feiras Responsável", ex);
                         erroNaLinha = true;
                         experienciaFeiras = null;
-                        continue;
+                        
                     }
 
                     //Recomendação
@@ -1578,7 +1636,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Recomendação Responsável", ex);
                         erroNaLinha = true;
                         recomendacao = null;
-                        continue;
+                        
                     }
 
                     responsavel = new Responsavel(
@@ -1608,7 +1666,7 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Email Responsável", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 //telefone
@@ -1624,7 +1682,7 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Telefone Responsável", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 //Identidade
@@ -1640,7 +1698,7 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Identidade Responsável", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
                 #endregion
 
@@ -1659,7 +1717,7 @@ namespace ConversorPlanilhaBD.Importacao
                     RegistrarErro(resultado, numeroLinha, "Nome Instituição", ex);
                     erroNaLinha = true;
                     nomeInst = null;
-                    continue;
+                    
                 }
 
                 if (nomeInst != null)
@@ -1681,7 +1739,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "CNPJ Instituição", ex);
                         erroNaLinha = true;
                         cnpj = null;
-                        continue;
+                        
                     }
 
                     //País
@@ -1695,7 +1753,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "País Instituição", ex);
                         erroNaLinha = true;
                         pais = null;
-                        continue;
+                        
                     }
 
                     //Estado
@@ -1716,7 +1774,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Estado Instituição", ex);
                         erroNaLinha = true;
                         estado = null;
-                        continue;
+                        
                     }
 
                     //Município
@@ -1730,7 +1788,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Município Instituição", ex);
                         erroNaLinha = true;
                         municipio = null;
-                        continue;
+                        
                     }
 
                     //Endereço
@@ -1744,7 +1802,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Endereço Instituição", ex);
                         erroNaLinha = true;
                         endereco = null;
-                        continue;
+                        
                     }
 
                     //Tipo de Rede
@@ -1758,7 +1816,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Tipo Rede Instituição", ex);
                         erroNaLinha = true;
                         tipoRede = null;
-                        continue;
+                        
                     }
 
                     //GRE
@@ -1772,7 +1830,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "GRE Instituição", ex);
                         erroNaLinha = true;
                         gre = null;
-                        continue;
+                        
                     }
 
                     //IDEB
@@ -1785,7 +1843,7 @@ namespace ConversorPlanilhaBD.Importacao
                     {
                         RegistrarErro(resultado, numeroLinha, "IDEB Instituição", ex);
                         erroNaLinha = true;
-                        continue;
+                        
                     }
 
                     //IDHM
@@ -1798,7 +1856,7 @@ namespace ConversorPlanilhaBD.Importacao
                     {
                         RegistrarErro(resultado, numeroLinha, "IDHM Instituição", ex);
                         erroNaLinha = true;
-                        continue;
+                        
                     }
 
                     //Participante
@@ -1812,7 +1870,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Participação Instituição", ex);
                         erroNaLinha = true;
                         participante = null;
-                        continue;
+                        
                     }
 
                     //Oferta Ensino
@@ -1826,7 +1884,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Oferta Ensino Instituição", ex);
                         erroNaLinha = true;
                         ofertaEnsino = null;
-                        continue;
+                        
                     }
 
                     //Adere Tempo Integral
@@ -1840,7 +1898,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Adesão Tempo Integral Instituição", ex);
                         erroNaLinha = true;
                         adere = null;
-                        continue;
+                        
                     }
 
                     //Tipologia Município
@@ -1854,8 +1912,65 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Tipologia Município Instituição", ex);
                         erroNaLinha = true;
                         tipologiaMunicipio = null;
-                        continue;
+                        
                     }
+
+                    // Apoio Financeiro
+                    string? apoioFinanceiro = ObterValor(row, ColunasProjetos.ApoioFinanceiro);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(apoioFinanceiro);
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Apoio Financeiro Instituição", ex);
+                        erroNaLinha = true;
+                        apoioFinanceiro = null;
+                        
+                    }
+
+                    //Participaco CienciaJovem Instituicao
+                    string? participacaoCJ = ObterValor(row, ColunasProjetos.ParticipouCienciaJovemFeira);
+                    try
+                    {
+                        ValidationHelper.VerificarTexto(participacaoCJ);
+                        if (participacaoCJ.ToUpper() == "SIM")
+                        {
+                            string? detalhes = ObterValor(row, ColunasProjetos.AnosParticipacaoInstituicao);
+                            try
+                            {
+                                ValidationHelper.VerificarTexto(detalhes);
+                            }
+                            catch (Exception ex)
+                            {
+                                RegistrarErro(resultado, numeroLinha, "Participacao Ciencia Jovem Instituicao", ex);
+                                erroNaLinha = true;
+                                detalhes = null;
+                                
+                            }
+
+                            int quantosProjetos = 0;
+                            try
+                            {
+                                quantosProjetos = ValidationHelper.VerificarNumeroInt(ObterValor(row, ColunasProjetos.QuantosProjetos));
+                            }
+                            catch (Exception ex)
+                            {
+                                RegistrarErro(resultado, numeroLinha, "Participacao Ciencia Jovem Instituicao", ex);
+                                erroNaLinha = true;
+                                
+                            }
+
+                            participacaoCJ = $"{participacaoCJ}. {detalhes}. Quantidade: {quantosProjetos}";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarErro(resultado, numeroLinha, "Participacao Ciencia Jovem Instituicao", ex);
+                        erroNaLinha = true;
+                        participacaoCJ = null;
+                    }
+
 
                     instituicao = new Instituicao(
                         nomeInst,
@@ -1872,7 +1987,8 @@ namespace ConversorPlanilhaBD.Importacao
                         ofertaEnsino,
                         adere,
                         tipologiaMunicipio,
-                        "" // Apoio financeiro não mapeado nesta aba
+                        apoioFinanceiro,
+                        participacaoCJ
                     );
                     _instituicoes.Add(instituicao);
                 }
@@ -1890,7 +2006,6 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Telefone Instituição", ex);
                     erroNaLinha = true;
-                    continue;
                 }
 
                 //email
@@ -1906,7 +2021,6 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Email Instituição", ex);
                     erroNaLinha = true;
-                    continue;
                 }
 
                 #endregion
@@ -1936,7 +2050,6 @@ namespace ConversorPlanilhaBD.Importacao
                     {
                         RegistrarErro(resultado, numeroLinha, "Vínculo Responsável/Instituição", ex);
                         erroNaLinha = true;
-                        continue;
                     }
                 }
 
@@ -1958,7 +2071,7 @@ namespace ConversorPlanilhaBD.Importacao
                     RegistrarErro(resultado, numeroLinha, "Nome Professor", ex);
                     erroNaLinha = true;
                     nomeProf = null;
-                    continue;
+                    
                 }
 
                 // Busca na RAM para evitar duplicados na hierarquia TPT
@@ -1981,7 +2094,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Gênero Professor", ex);
                         erroNaLinha = true;
                         generoProf = null;
-                        continue;
+                        
                     }
 
                     //raça
@@ -1995,7 +2108,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Raça Professor", ex);
                         erroNaLinha = true;
                         racaProf = null;
-                        continue;
+                        
                     }
 
                     //matrícula
@@ -2009,7 +2122,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Matrícula Professor", ex);
                         erroNaLinha = true;
                         matriculaProf = null;
-                        continue;
+                        
                     }
 
                     professor = new Professor(
@@ -2038,7 +2151,7 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Identidade Professor", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 //CPF
@@ -2054,7 +2167,7 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "CPF Professor", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 //telefone
@@ -2070,7 +2183,7 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Telefone Professor", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 //email
@@ -2086,7 +2199,7 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Email Professor", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
                 #endregion
 
@@ -2106,7 +2219,7 @@ namespace ConversorPlanilhaBD.Importacao
                     RegistrarErro(resultado, numeroLinha, "Nome Projeto", ex);
                     erroNaLinha = true;
                     nomeProjeto = null;
-                    continue;
+                    
                 }
 
                 if (nomeProjeto != null)
@@ -2127,7 +2240,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Deficiência Projeto", ex);
                         erroNaLinha = true;
                         deficiencia = null;
-                        continue;
+                        
                     }
 
                     string? participacao = ObterValor(row, ColunasProjetos.Participacao);
@@ -2140,7 +2253,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Participação Projeto", ex);
                         erroNaLinha = true;
                         participacao = null;
-                        continue;
+                        
                     }
 
                     string? categoriaInscricao = ObterValor(row, ColunasProjetos.CategoriaInscricao);
@@ -2153,7 +2266,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Categoria de Inscrição Projeto", ex);
                         erroNaLinha = true;
                         categoriaInscricao = null;
-                        continue;
+                        
                     }
 
                     DateTime? carimboDataHora = null;
@@ -2165,7 +2278,7 @@ namespace ConversorPlanilhaBD.Importacao
                     {
                         RegistrarErro(resultado, numeroLinha, "Carimbo de Data/Hora Projeto", ex);
                         erroNaLinha = true;
-                        continue;
+                        
                     }
 
                     string? palavrasChave = ObterValor(row, ColunasProjetos.PalavrasChave);
@@ -2178,7 +2291,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Palavras-Chave Projeto", ex);
                         erroNaLinha = true;
                         palavrasChave = null;
-                        continue;
+                        
                     }
 
                     string? ods = ObterValor(row, ColunasProjetos.ODS);
@@ -2191,7 +2304,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "ODS Projeto", ex);
                         erroNaLinha = true;
                         ods = null;
-                        continue;
+                        
                     }
 
                     string? tema = ObterValor(row, ColunasProjetos.Tema);
@@ -2204,7 +2317,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Tema Projeto", ex);
                         erroNaLinha = true;
                         tema = null;
-                        continue;
+                        
                     }
 
                     string? area = ObterValor(row, ColunasProjetos.Area);
@@ -2217,7 +2330,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Área Projeto", ex);
                         erroNaLinha = true;
                         area = null;
-                        continue;
+                        
                     }
 
                     string? objetivo = ObterValor(row, ColunasProjetos.Objetivo);
@@ -2230,7 +2343,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Objetivo Projeto", ex);
                         erroNaLinha = true;
                         objetivo = null;
-                        continue;
+                        
                     }
 
                     string? resumo = ObterValor(row, ColunasProjetos.Resumo);
@@ -2243,7 +2356,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Resumo Projeto", ex);
                         erroNaLinha = true;
                         resumo = null;
-                        continue;
+                        
                     }
 
                     projeto = new Projeto
@@ -2295,7 +2408,7 @@ namespace ConversorPlanilhaBD.Importacao
                     RegistrarErro(resultado, numeroLinha, "Nome Aluno 1", ex);
                     erroNaLinha = true;
                     nomeAluno = null;
-                    continue;
+                    
                 }
 
                 if (nomeAluno != null)
@@ -2317,7 +2430,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Gênero Aluno 1", ex);
                         erroNaLinha = true;
                         generoAluno = null;
-                        continue;
+                        
                     }
 
                     //raça
@@ -2331,7 +2444,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Raça Aluno 1", ex);
                         erroNaLinha = true;
                         racaAluno = null;
-                        continue;
+                        
                     }
                     aluno = new Pessoa(nomeAluno, generoAluno, racaAluno);
                     _alunos.Add(aluno);
@@ -2346,13 +2459,13 @@ namespace ConversorPlanilhaBD.Importacao
                     ValidationHelper.VerificarTexto(orgaoAluno);
 
                     if (!aluno.Identidade.Any(i => i.Numero == rgAluno))
-                        aluno.Identidade.Add(new Identidade(rgProf, orgaoAluno));
+                        aluno.Identidade.Add(new Identidade(rgAluno, orgaoAluno));
                 }
                 catch (Exception ex)
                 {
                     RegistrarErro(resultado, numeroLinha, "Identidade Aluno", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 //CPF
@@ -2368,7 +2481,7 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "CPF Aluno 1", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 //email
@@ -2384,7 +2497,7 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Email Aluno 1", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 //Associa a projeto
@@ -2403,7 +2516,7 @@ namespace ConversorPlanilhaBD.Importacao
                     RegistrarErro(resultado, numeroLinha, "Nome Aluno 2", ex);
                     erroNaLinha = true;
                     nomeAluno = null;
-                    continue;
+                    
                 }
 
                 if (nomeAluno != null)
@@ -2425,7 +2538,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Gênero Aluno 2", ex);
                         erroNaLinha = true;
                         generoAluno = null;
-                        continue;
+                        
                     }
 
                     //raça
@@ -2439,7 +2552,7 @@ namespace ConversorPlanilhaBD.Importacao
                         RegistrarErro(resultado, numeroLinha, "Raça Aluno 2", ex);
                         erroNaLinha = true;
                         racaAluno = null;
-                        continue;
+                        
                     }
                     aluno = new Pessoa(nomeAluno, generoAluno, racaAluno);
                     _alunos.Add(aluno);
@@ -2453,17 +2566,17 @@ namespace ConversorPlanilhaBD.Importacao
                     ValidationHelper.VerificarTexto(orgaoAluno);
 
                     if (!aluno.Identidade.Any(i => i.Numero == rgAluno))
-                        aluno.Identidade.Add(new Identidade(rgProf, orgaoAluno));
+                        aluno.Identidade.Add(new Identidade(rgAluno, orgaoAluno));
                 }
                 catch (Exception ex)
                 {
                     RegistrarErro(resultado, numeroLinha, "Identidade Aluno 2", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 //CPF
-                cpfAluno = ObterValor(row, ColunasProjetos.CPFAluno1);
+                cpfAluno = ObterValor(row, ColunasProjetos.CPFAluno2);
                 try
                 {
                     cpfAluno = ValidationHelper.VerificarIdentidade(cpfAluno);
@@ -2475,11 +2588,11 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "CPF Aluno 2", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 //email
-                emailAluno = ObterValor(row, ColunasProjetos.EmailAluno1);
+                emailAluno = ObterValor(row, ColunasProjetos.EmailAluno2);
                 try
                 {
                     ValidationHelper.VerificarEmail(emailAluno);
@@ -2491,7 +2604,7 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     RegistrarErro(resultado, numeroLinha, "Email Aluno 2", ex);
                     erroNaLinha = true;
-                    continue;
+                    
                 }
 
                 //Associa a projeto
@@ -2586,6 +2699,10 @@ namespace ConversorPlanilhaBD.Importacao
             public const int OfertaEnsino = 29;
             public const int AdereTempoIntegral = 30;
             public const int TipologiaMunicipio = 31;
+            public const int ApoioFinanceiro = 89;
+            public const int ParticipouCienciaJovemFeira = 86;
+            public const int AnosParticipacaoInstituicao = 87;
+            public const int QuantosProjetos = 88;
 
             // Feira
             public const int NomeFeira = 66;
@@ -2608,13 +2725,6 @@ namespace ConversorPlanilhaBD.Importacao
             public const int PeriodoElaboracao = 83;
             public const int ProjetosAvaliados = 84;
             public const int FormaAvaliacao = 85;
-            public const int ParticipouCienciaJovemFeira = 86;
-            public const int AnosParticipacaoInstituicao = 87;
-            public const int QuantosProjetos = 88;
-            public const int ApoioFinanceiro = 89;
-
-            //Se não estiver preenchida não pode ser inserida
-            public const int Coluna88 = 90;
         }
 
         // ============================================================
@@ -2623,7 +2733,6 @@ namespace ConversorPlanilhaBD.Importacao
         private static class ColunasProjetos
         {
             // Responsável
-            public const int EnderecoEmailResponsavel = 1;
             public const int NomeCompletoResponsavel = 2;
             public const int DataNascimentoResponsavel = 3;
             public const int DocumentoIdentificacaoResponsavel = 4;
@@ -2655,6 +2764,10 @@ namespace ConversorPlanilhaBD.Importacao
             public const int OfertaEnsinoInstituicao = 27;
             public const int AdereInstituicao = 28;
             public const int TipologiaMunicipioInstituicao = 29;
+            public const int ApoioFinanceiro = 88;
+            public const int ParticipouCienciaJovemFeira = 85;
+            public const int AnosParticipacaoInstituicao = 86;
+            public const int QuantosProjetos = 87;
 
             // Professor
             public const int NomeProfessor = 31;
@@ -2697,9 +2810,6 @@ namespace ConversorPlanilhaBD.Importacao
             public const int Area = 62;
             public const int Objetivo = 63;
             public const int Resumo = 64;
-
-            //Se não estiver preenchida não pode ser inserida
-            public const int Coluna88 = 89;
         }
         #endregion
     }
