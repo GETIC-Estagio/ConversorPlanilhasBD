@@ -155,10 +155,17 @@ namespace ConversorPlanilhaBD.Importacao
             {
                 try
                 {
-                    if (feira.Instituicao != null && feira.Instituicao.Id > 0) feira.InstituicaoId = feira.Instituicao.Id;
-                    if (feira.InstituicaoOrganizadora != null && feira.InstituicaoOrganizadora.Id > 0) feira.InstituicaoOrganizadoraId = feira.InstituicaoOrganizadora.Id;
-                    if (feira.Responsavel != null && feira.Responsavel.Id > 0) feira.ResponsavelId = feira.Responsavel.Id;
-                    if (feira.ResponsavelContato != null && feira.ResponsavelContato.Id > 0) feira.ResponsavelContatoId = feira.ResponsavelContato.Id;
+                    if (feira.Instituicao != null && feira.Instituicao.Id > 0)
+                        feira.InstituicaoId = feira.Instituicao.Id;
+
+                    if (feira.InstituicaoOrganizadora != null && feira.InstituicaoOrganizadora.Id > 0)
+                        feira.InstituicaoOrganizadoraId = feira.InstituicaoOrganizadora.Id;
+
+                    if (feira.Responsavel != null && feira.Responsavel.Id > 0)
+                        feira.ResponsavelId = feira.Responsavel.Id;
+
+                    if (feira.ResponsavelContato != null && feira.ResponsavelContato.Id > 0)
+                        feira.ResponsavelContatoId = feira.ResponsavelContato.Id;
 
                     // Limpa as referências de objeto para focar apenas nas FKs numéricas salvas nos passos anteriores
                     feira.Instituicao = null;
@@ -179,6 +186,36 @@ namespace ConversorPlanilhaBD.Importacao
             }
 
             // ============================================================
+            // PROFESSORES
+            // ============================================================
+
+            foreach (var professor in _professores)
+            {
+                var telefonesDoProfessor = professor.Telefone.ToList();
+                var emailsDoProfessor = professor.Email.ToList();
+                var identidadesDoProfessor = professor.Identidade.ToList();
+
+                professor.Telefone.Clear();
+                professor.Email.Clear();
+                professor.Identidade.Clear();
+
+                try
+                {
+                    db.Professores.Add(professor);
+                    await db.SaveChangesAsync();
+                    await SalvarContatosPessoaAsync(db, professor.Id, telefonesDoProfessor,
+                        emailsDoProfessor, identidadesDoProfessor, professor.Nome, resultado);
+                }
+                catch (Exception ex)
+                {
+                    db.ChangeTracker.Clear(); // Remove o objeto que não conseguiu ser inserado
+
+                    Erro?.Invoke($"Banco de dados - Erro ao inserir Responsável '{professor.Nome}': {ex.Message}");
+                    resultado.RegistrarErro(0, $"Banco [Responsável: {professor.Nome}]: {ex.Message}");
+                }
+            }
+
+            // ============================================================
             // PROJETOS
             // ============================================================
 
@@ -186,8 +223,11 @@ namespace ConversorPlanilhaBD.Importacao
             {
                 try
                 {
-                    if (projeto.Responsavel != null && projeto.Responsavel.Id > 0) projeto.ResponsavelId = projeto.Responsavel.Id;
-                    if (projeto.Professor != null && projeto.Professor.Id > 0) projeto.ProfessorId = projeto.Professor.Id;
+                    if (projeto.Responsavel != null && projeto.Responsavel.Id > 0) 
+                        projeto.ResponsavelId = projeto.Responsavel.Id;
+
+                    if (projeto.Professor != null && projeto.Professor.Id > 0) 
+                        projeto.ProfessorId = projeto.Professor.Id;
 
                     projeto.Responsavel = null;
                     projeto.Professor = null;
