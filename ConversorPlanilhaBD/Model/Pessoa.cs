@@ -17,12 +17,13 @@ namespace ConversorPlanilhaBD.Model
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        
+
         //Guarda o nome da pessoa
         public string? Nome { get; set; }
-        
-        //Guarda uma lista de Identidades e verifica se são somente numeros
-        public List<Identidade> Identidade { get; set; } = new();
+
+        //Guarda a Identidade separada por CPF e RG
+        //Se falar identidade sem órgão expedidor vai ser considerado como CPF
+        public Identidade? Identidade{ get; set; }
 
         //Guarda uma lista de Emails e verifica se possui @
         public List<Email> Email { get; set; } = new();

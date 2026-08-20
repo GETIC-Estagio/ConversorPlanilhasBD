@@ -55,9 +55,9 @@ namespace ConversorPlanilhaBD.Data
 
             // PESSOA -> IDENTIDADES (1:N)
             modelBuilder.Entity<Pessoa>()
-                .HasMany(p => p.Identidade)
+                .HasOne(p => p.Identidade)
                 .WithOne(i => i.Pessoa)
-                .HasForeignKey(i => i.PessoaId)
+                .HasForeignKey<Identidade>(i => i.PessoaId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // ========================================================

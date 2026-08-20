@@ -14,10 +14,14 @@ namespace ConversorPlanilhaBD.Model.ValueObjects
         public int Id { get; set; }
 
         //Guarda o numero da identidade
-        public string? Numero { get; set; }
+        public string? CPF { get; set; }
 
         //Guarda o orgao que expediu
         public string? OrgaoExpedidor { get; set; }
+
+        //Guarda o RG
+        public string? RG { get; set; }
+
 
         //Guarda a chave estrangeira de pessoa
         public int? PessoaId { get; set; }
@@ -27,17 +31,17 @@ namespace ConversorPlanilhaBD.Model.ValueObjects
         //Construtor default para o EF CORE pegar
         protected Identidade() { }
 
-        //Na planilha várias vezes são enviados apenas o numero
-        //Esse construtor é para isso
-        public Identidade(string? numero)
+        //Esse construtor é para o CPF
+        public Identidade(string? cpf)
         {
-            Numero = numero;
+            CPF = cpf;
         }
 
-        //Esse construtor serve para se vier o orgão de expedição
-        public Identidade(string? numero, string? orgaoExpeditor) : this(numero)
+        //Se vier Órgão Expedidor é RG
+        public Identidade(string? rg, string? orgaoExpeditor)
         {
             OrgaoExpedidor = orgaoExpeditor;
+            RG = rg;
         }
     }
 }
