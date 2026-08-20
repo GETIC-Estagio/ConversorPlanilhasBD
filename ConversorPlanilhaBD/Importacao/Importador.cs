@@ -284,58 +284,66 @@ namespace ConversorPlanilhaBD.Importacao
             }
         }
 
-        private async Task SalvarContatosPessoaAsync(
-            CienciaJovemDb db, int pessoaId, List<Telefone> telefones, List<Email> emails,
-            List<Identidade> identidades, string? nomePessoa, ResultadoImportacao resultado)
+        private async Task SalvarContatosPessoaAsync(CienciaJovemDb db, int Id, List<Telefone> telefones, List<Email> emails,
+            List<Identidade> identidades, string? nome, ResultadoImportacao resultado)
         {
-            foreach (var t in telefones)
+            if (telefones.Count != 0)
             {
-                try
+                foreach (var t in telefones)
                 {
-                    t.PessoaId = pessoaId;
-                    t.Pessoa = null;
-                    db.Telefones.Add(t);
-                    await db.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
-                    // Destaca apenas o telefone problemático sem resetar o contexto inteiro
-                    db.Entry(t).State = EntityState.Detached;
-                    resultado.RegistrarErro(0, $"Banco [Telefone da Pessoa {nomePessoa}]: {ex.Message}");
+                    try
+                    {
+                        t.PessoaId = Id;
+                        t.Pessoa = null;
+                        db.Telefones.Add(t);
+                        await db.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Destaca apenas o telefone problemático sem resetar o contexto inteiro
+                        db.Entry(t).State = EntityState.Detached;
+                        resultado.RegistrarErro(0, $"Banco [Telefone da Pessoa {nome}]: {ex.Message}");
+                    }
                 }
             }
 
-            foreach (var e in emails)
+            if (emails.Count != 0)
             {
-                try
+                foreach (var e in emails)
                 {
-                    e.PessoaId = pessoaId;
-                    e.Pessoa = null;
-                    db.Emails.Add(e);
-                    await db.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
-                    // Destaca apenas o email problemático
-                    db.Entry(e).State = EntityState.Detached;
-                    resultado.RegistrarErro(0, $"Banco [Email da Pessoa {nomePessoa}]: {ex.Message}");
+                    try
+                    {
+                        e.PessoaId = Id;
+                        e.Pessoa = null;
+                        db.Emails.Add(e);
+                        await db.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Destaca apenas o email problemático
+                        db.Entry(e).State = EntityState.Detached;
+                        resultado.RegistrarErro(0, $"Banco [Email da Pessoa {nome}]: {ex.Message}");
+                    }
                 }
             }
 
-            foreach (var i in identidades)
+            if (identidades.Count != 0)
             {
-                try
+                foreach (var i in identidades)
                 {
-                    i.PessoaId = pessoaId;
-                    i.Pessoa = null;
-                    db.Identidades.Add(i);
-                    await db.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
-                    //Destaca apenas a identidade problemática
-                    db.Entry(i).State = EntityState.Detached;
-                    resultado.RegistrarErro(0, $"Banco [Identidade da Pessoa {nomePessoa}]: {ex.Message}");
+                    try
+                    {
+                        i.PessoaId = Id;
+                        i.Pessoa = null;
+                        db.Identidades.Add(i);
+                        await db.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        //Destaca apenas a identidade problemática
+                        db.Entry(i).State = EntityState.Detached;
+                        resultado.RegistrarErro(0, $"Banco [Identidade da Pessoa {nome}]: {ex.Message}");
+                    }
                 }
             }
         }
@@ -344,37 +352,43 @@ namespace ConversorPlanilhaBD.Importacao
             CienciaJovemDb db, int instituicaoId, List<Telefone> telefones,
             List<Email> emails, string? nomeInst, ResultadoImportacao resultado)
         {
-            foreach (var t in telefones)
+            if (telefones.Count != 0)
             {
-                try
+                foreach (var t in telefones)
                 {
-                    t.InstituicaoId = instituicaoId;
-                    t.Instituicao = null;
-                    db.Telefones.Add(t);
-                    await db.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
-                    // Remove apenas o telefone problemático da memória
-                    db.Entry(t).State = EntityState.Detached;
-                    resultado.RegistrarErro(0, $"Banco [Telefone da Instituição {nomeInst}]: {ex.Message}");
+                    try
+                    {
+                        t.InstituicaoId = instituicaoId;
+                        t.Instituicao = null;
+                        db.Telefones.Add(t);
+                        await db.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Remove apenas o telefone problemático da memória
+                        db.Entry(t).State = EntityState.Detached;
+                        resultado.RegistrarErro(0, $"Banco [Telefone da Instituição {nomeInst}]: {ex.Message}");
+                    }
                 }
             }
 
-            foreach (var e in emails)
+            if (emails.Count != 0)
             {
-                try
+                foreach (var e in emails)
                 {
-                    e.InstituicaoId = instituicaoId;
-                    e.Instituicao = null;
-                    db.Emails.Add(e);
-                    await db.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
-                    // Remove apenas o email problemático da memória
-                    db.Entry(e).State = EntityState.Detached;
-                    resultado.RegistrarErro(0, $"Banco [Email da Instituição {nomeInst}]: {ex.Message}");
+                    try
+                    {
+                        e.InstituicaoId = instituicaoId;
+                        e.Instituicao = null;
+                        db.Emails.Add(e);
+                        await db.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Remove apenas o email problemático da memória
+                        db.Entry(e).State = EntityState.Detached;
+                        resultado.RegistrarErro(0, $"Banco [Email da Instituição {nomeInst}]: {ex.Message}");
+                    }
                 }
             }
         }
