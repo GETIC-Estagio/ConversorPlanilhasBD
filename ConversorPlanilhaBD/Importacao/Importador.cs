@@ -2282,6 +2282,7 @@ namespace ConversorPlanilhaBD.Importacao
                     aluno = new Pessoa(nomeAluno, generoAluno, racaAluno);
                     _alunos.Add(aluno);
                 }
+
                 //RG / Identidade
                 string rgAluno = ObterValor(row, ColunasProjetos.IdentidadeAluno1);
                 string orgaoAluno = ObterValor(row, ColunasProjetos.OrgaoExpedidorAluno1);
@@ -2331,6 +2332,10 @@ namespace ConversorPlanilhaBD.Importacao
                     erroNaLinha = true;
                     continue;
                 }
+
+                //Associa a projeto
+                if (projeto != null)
+                    projeto.Alunos.Add(aluno);
 
                 // ALUNO 2
                 nomeAluno = ObterValor(row, ColunasProjetos.NomeAluno2);
@@ -2434,6 +2439,11 @@ namespace ConversorPlanilhaBD.Importacao
                     erroNaLinha = true;
                     continue;
                 }
+
+                //Associa a projeto
+                if (projeto != null)
+                    projeto.Alunos.Add(aluno);
+
                 #endregion
 
                 if (!erroNaLinha)
