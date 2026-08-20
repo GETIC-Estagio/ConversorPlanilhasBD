@@ -62,9 +62,6 @@ namespace ConversorPlanilhaBD.Model
         //Se os projetos são avaliados durante a feira
         public string? ProjetosAvaliados { get; set; }
 
-        //Quantos projetos foram apresentados ao todo
-        public int? QuantosProjetos { get; set; }
-
         //Data e Hora que a feira foi registrada
         public DateTime? DataHora { get; set; }
 
@@ -111,8 +108,7 @@ namespace ConversorPlanilhaBD.Model
             string? periodoRealizacao, string? dataRealizacao, string? modalidadeParticipacao,
             int? numProjetos, string? areasConhecimento, string? nivelEnsino,
             int? numEscolas, string? afiliada, string? processoSelecao,
-            string? periodoElaboracao, string? projetosAvaliados,
-            int? quantosProjetos, DateTime? dataHora)
+            string? periodoElaboracao, string? projetosAvaliados, DateTime? dataHora)
         {
             Nome = nome;
             Alcance = alcance;
@@ -129,7 +125,6 @@ namespace ConversorPlanilhaBD.Model
             ProcessoSelecao = processoSelecao;
             PeriodoElaboracao = periodoElaboracao;
             ProjetosAvaliados = projetosAvaliados;
-            QuantosProjetos = quantosProjetos;
             DataHora = dataHora;
         }
     }

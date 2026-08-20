@@ -62,6 +62,10 @@ namespace ConversorPlanilhaBD.Model
         //Se a instituição recebeu algum apoio financeiro para realizar a feira
         public string? ApoioFinanceiro { get; set; }
 
+        //Se a instituição ja participou do Ciencia Jovem e 
+        //se sim, em que anos e quantos projetos foram apresentados
+        public string? ParticipacaoCienciaJovem { get; set; }
+
         /// <summary>
         /// Guarda uma lista de AuxInstituicaoResponsavel
         /// Por responsavel e instituicao ser uma relacao N:M
@@ -100,7 +104,7 @@ namespace ConversorPlanilhaBD.Model
         public Instituicao(string? nome, string? cnpj, string? pais, string? estado,
             string? municipio, string? endereco, string? tipoRede, string? gre, double? ideb, double? idhm, 
             string? participante, string? ofertaEnsino, string? adere,
-            string? tipologiaMunicipio, string? apoioFinanceiro) : this(nome)
+            string? tipologiaMunicipio, string? apoioFinanceiro, string? participacaoCJ) : this(nome)
         {
             CNPJ = cnpj;
             Pais = pais;
@@ -116,6 +120,7 @@ namespace ConversorPlanilhaBD.Model
             Adere = adere;
             TipologiaMunicipio = tipologiaMunicipio;
             ApoioFinanceiro = apoioFinanceiro;
+            ParticipacaoCienciaJovem = participacaoCJ;
         }
     }
 }
