@@ -210,8 +210,8 @@ namespace ConversorPlanilhaBD.Importacao
                 {
                     db.ChangeTracker.Clear(); // Remove o objeto que não conseguiu ser inserado
 
-                    Erro?.Invoke($"Banco de dados - Erro ao inserir Responsável '{professor.Nome}': {ex.Message}");
-                    resultado.RegistrarErro(0, $"Banco [Responsável: {professor.Nome}]: {ex.Message}");
+                    Erro?.Invoke($"Banco de dados - Erro ao inserir Professor '{professor.Nome}': {ex.Message}");
+                    resultado.RegistrarErro(0, $"Banco [Professor: {professor.Nome}]: {ex.Message}");
                 }
             }
 
@@ -249,34 +249,35 @@ namespace ConversorPlanilhaBD.Importacao
 
             foreach (var projeto in _projetosImportados)
             {
-                if (projeto.Id <= 0) 
-
-                foreach (var aluno in projeto.Alunos)
+                if (projeto.Id <= 0)
                 {
-                    var telefonesDoAluno = aluno.Telefone.ToList();
-                    var emailsDoAluno = aluno.Email.ToList();
-                    var identidadesDoAluno = aluno.Identidade.ToList();
-
-                    aluno.Telefone.Clear();
-                    aluno.Email.Clear();
-                    aluno.Identidade.Clear();
-
-                    try
+                    foreach (var aluno in projeto.Alunos)
                     {
-                        aluno.ProjetoId = projeto.Id;
-                        aluno.Projeto = null;
+                        var telefonesDoAluno = aluno.Telefone.ToList();
+                        var emailsDoAluno = aluno.Email.ToList();
+                        var identidadesDoAluno = aluno.Identidade.ToList();
 
-                        db.Pessoas.Add(aluno);
-                        await db.SaveChangesAsync();
+                        aluno.Telefone.Clear();
+                        aluno.Email.Clear();
+                        aluno.Identidade.Clear();
 
-                        await SalvarContatosPessoaAsync(db, aluno.Id, telefonesDoAluno, emailsDoAluno,
-                            identidadesDoAluno, aluno.Nome, resultado);
-                    }
-                    catch (Exception ex)
-                    {
-                        db.ChangeTracker.Clear();
-                        Erro?.Invoke($"Banco - Erro no Aluno '{aluno.Nome}': {ex.Message}");
-                        resultado.RegistrarErro(0, $"Banco [Aluno: {aluno.Nome}]: {ex.Message}");
+                        try
+                        {
+                            aluno.ProjetoId = projeto.Id;
+                            aluno.Projeto = null;
+
+                            db.Pessoas.Add(aluno);
+                            await db.SaveChangesAsync();
+
+                            await SalvarContatosPessoaAsync(db, aluno.Id, telefonesDoAluno, emailsDoAluno,
+                                identidadesDoAluno, aluno.Nome, resultado);
+                        }
+                        catch (Exception ex)
+                        {
+                            db.ChangeTracker.Clear();
+                            Erro?.Invoke($"Banco - Erro no Aluno '{aluno.Nome}': {ex.Message}");
+                            resultado.RegistrarErro(0, $"Banco [Aluno: {aluno.Nome}]: {ex.Message}");
+                        }
                     }
                 }
             }
@@ -492,7 +493,6 @@ namespace ConversorPlanilhaBD.Importacao
                     RegistrarErro(resultado, numeroLinha, "Nome Responsável", ex);
                     erroNaLinha = true;
                     nomeCompleto = null;
-                    
                 }
 
                 //Se o nome existe, testa para ver se aquele responsavel ja existe
