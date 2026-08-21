@@ -1,7 +1,7 @@
 ﻿using ClosedXML.Excel;
 using ConversorPlanilhaBD.Importacao;
 using ConversorPlanilhaBD.Model.ValueObjects;
-using ConversorPlanilhaBD.Validators;
+using ConversorPlanilhaBD.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,12 +12,12 @@ namespace ConversorPlanilhaBD.Importing.Makers
     /// Essa classe é responsável por fornecer métodos de validação e extração de dados de uma planilha Excel,
     /// registrando erros no resultado da importação quando necessário.
     /// </summary>
-    public abstract class ValidationMaker
+    public abstract class MakerHelper
     {
 
         protected readonly ResultadoImportacao _resultado;
 
-        protected ValidationMaker(ResultadoImportacao resultado)
+        protected MakerHelper(ResultadoImportacao resultado)
         {
             _resultado = resultado;
         }

@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ConversorPlanilhaBD.Data
 {
+    /// <summary>
+    /// Classe que cria as relações e as tabelas no Banco usando EF CORE
+    /// </summary>
     public class CienciaJovemDb : DbContext
     {
         public CienciaJovemDb(DbContextOptions<CienciaJovemDb> options) : base(options) { }

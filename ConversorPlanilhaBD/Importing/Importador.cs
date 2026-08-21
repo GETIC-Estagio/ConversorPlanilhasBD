@@ -11,26 +11,18 @@ using System.Text;
 
 namespace ConversorPlanilhaBD.Importacao
 {
+    /// <summary>
+    /// Classe que organiza os sub-importadores
+    /// </summary>
     public class Importador
     {
         private readonly XLWorkbook _workbook;
 
+        //abas da planilha
         private readonly IXLWorksheet _feiras;
         private readonly IXLWorksheet _preProjetos;
 
-        //Cria lista dos modelos necessários para serem inseridos depois no banco de dados
-        private readonly List<Responsavel> _responsaveis = new();
-        private readonly List<Instituicao> _instituicoes = new();
-
-        private readonly List<Professor> _professores = new();
-        private readonly List<Pessoa> _alunos = new();
-
-        private readonly List<Feira> _feirasImportadas = new();
-        private readonly List<Projeto> _projetosImportados = new();
-
-        private readonly List<AuxInstituicaoResponsavel>
-            _relacionamentosInstituicaoResponsavel = new();
-
+        //Eventos de UI
         public event Action<int, int>? Progresso;
         public event Action<int, int>? ContadoresAtualizados;
         public event Action<string>? Erro;
@@ -73,13 +65,13 @@ namespace ConversorPlanilhaBD.Importacao
 
             await using var db = new CienciaJovemDb(optionsBuilder.Options);
 
-            ////Processa Feiras
-            //var importadorFeira = new ImportadorFeira(db, _feiras, resultado);
-            //importadorFeira.Progresso += (p, t) => Progresso?.Invoke(p, t);
-            //importadorFeira.ContadoresAtualizados += (s, e) => ContadoresAtualizados?.Invoke(s, e);
-            //importadorFeira.Erro += msg => Erro?.Invoke(msg);
+            //Processa Feiras
+            var importadorFeira = new ImportadorFeira(db, _feiras, resultado);
+            importadorFeira.Progresso += (p, t) => Progresso?.Invoke(p, t);
+            importadorFeira.ContadoresAtualizados += (s, e) => ContadoresAtualizados?.Invoke(s, e);
+            importadorFeira.Erro += msg => Erro?.Invoke(msg);
 
-            //await importadorFeira.ImportarAsync();
+            await importadorFeira.ImportarAsync();
 
             //Processa Projetos
             var importadorProjetos = new ImportadorPreProjetos(db, _preProjetos, resultado);

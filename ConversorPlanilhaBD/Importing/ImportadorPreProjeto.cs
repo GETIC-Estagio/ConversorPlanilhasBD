@@ -4,6 +4,7 @@ using ConversorPlanilhaBD.Importacao;
 using ConversorPlanilhaBD.Importing.Makers;
 using ConversorPlanilhaBD.Model;
 using ConversorPlanilhaBD.Model.AuxModels;
+using ConversorPlanilhaBD.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,9 @@ using System.Text;
 
 namespace ConversorPlanilhaBD.Importing
 {
+    /// <summary>
+    /// Essa classe é responsável por importar os dados de um pré-projeto a partir de uma planilha Excel para o banco de dados.
+    /// </summary>
     public class ImportadorPreProjetos
     {
         private readonly CienciaJovemDb _db;

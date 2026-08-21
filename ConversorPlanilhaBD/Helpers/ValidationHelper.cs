@@ -7,7 +7,7 @@ using System.Globalization;
 using System.Text;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace ConversorPlanilhaBD.Validators
+namespace ConversorPlanilhaBD.Helpers
 {
     /// <summary>
     /// Serve para validar dados de entrada, como nomes, datas, emails, telefones, identidades, CNPJs, países e estados brasileiros.
@@ -74,7 +74,7 @@ namespace ConversorPlanilhaBD.Validators
         }
 
         //Verificar RG é difícil, então apenas verificado se não é vazio e se contem só números
-        public static string VerificarRG(string rg, string orgaoExpedidor)
+        public static string VerificarRG(string rg)
         {
             if (string.IsNullOrEmpty(rg)) throw new ArgumentException("A identidade não pode ser vazia");
 
@@ -84,8 +84,6 @@ namespace ConversorPlanilhaBD.Validators
             {
                 if (!char.IsDigit(c)) throw new ArgumentException("Identidade só pode conter números");
             }
-
-            VerificarTexto(orgaoExpedidor);
 
             return rg;
         }
@@ -185,7 +183,7 @@ namespace ConversorPlanilhaBD.Validators
                 throw new ArgumentException("CPF não pode ser vazio");
             }
 
-            cpf = cpf.Replace(".", "").Replace("-", "").Replace("/", "").Trim();
+            cpf = cpf.Replace(".", "").Replace("-", "").Trim();
 
             if (cpf.Length != 11)
             {

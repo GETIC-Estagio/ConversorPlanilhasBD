@@ -4,6 +4,7 @@ using ConversorPlanilhaBD.Importacao;
 using ConversorPlanilhaBD.Importing.Makers;
 using ConversorPlanilhaBD.Model;
 using ConversorPlanilhaBD.Model.AuxModels;
+using ConversorPlanilhaBD.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -56,12 +57,12 @@ namespace ConversorPlanilhaBD.Importing
                 try
                 {
                     //Cria os Responsaveis
-                    var responsavelSubmissao = await _responsavelMaker.ObterOuCriarAsync(row, numeroLinha, isContato: false);
-                    var responsavelContato = await _responsavelMaker.ObterOuCriarAsync(row, numeroLinha, isContato: true);
+                    var responsavelSubmissao = await _responsavelMaker.ObterOuCriarFeiraAsync(row, numeroLinha, isContato: false);
+                    var responsavelContato = await _responsavelMaker.ObterOuCriarFeiraAsync(row, numeroLinha, isContato: true);
 
                     //Cria as Instituicoes
-                    var instSede = await _instituicaoMaker.ObterOuCriarAsync(row, numeroLinha, isOrganizadora: false);
-                    var instOrganizadora = await _instituicaoMaker.ObterOuCriarAsync(row, numeroLinha, isOrganizadora: true);
+                    var instSede = await _instituicaoMaker.ObterOuCriarFeiraAsync(row, numeroLinha, isOrganizadora: false);
+                    var instOrganizadora = await _instituicaoMaker.ObterOuCriarFeiraAsync(row, numeroLinha, isOrganizadora: true);
 
                     // Vínculo Auxiliar (Responsável <-> Instituição Sede)
                     if (responsavelSubmissao != null && instSede != null)

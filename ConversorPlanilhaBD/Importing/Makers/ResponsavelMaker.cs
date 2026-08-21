@@ -7,11 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ConversorPlanilhaBD.Model.ValueObjects;
-using ConversorPlanilhaBD.Validators;
+using ConversorPlanilhaBD.Helpers;
 
 namespace ConversorPlanilhaBD.Importing.Makers
 {
-    public class ResponsavelMaker : ValidationMaker
+    public class ResponsavelMaker : MakerHelper
     {
         private readonly CienciaJovemDb _db;
 
@@ -20,10 +20,175 @@ namespace ConversorPlanilhaBD.Importing.Makers
             _db = db;
         }
 
-        public async Task<Responsavel?> ObterOuCriarAsync(IXLRow row, int numeroLinha, bool isContato)
+        // ============================================================
+        // RESPONSÁVEL DA ABA DE PRE-PROJETOS
+        // ============================================================
+
+        public async Task<Responsavel?> ObterOuCriarPreProjetoAsync(IXLRow row, int numeroLinha)
         {
             // ============================================================
-            //  OBTENÇÃO CPF E BUSCA NO BANCO DE DADOS
+            //  OBTENÇÃO NOME
+            // ============================================================
+
+            string? nomeResponsavel = ExtrairValidarNome(row, ExcelHelper.ColunasProjetos.NomeCompletoResponsavel);
+
+            // ============================================================
+            // VALIDAÇÃO DO NOME
+            // ============================================================
+
+            if (string.IsNullOrWhiteSpace(nomeResponsavel))
+            {
+                EnviarErro(
+                    numeroLinha,
+                    "Nome do responsável não informado."
+                );
+
+                return null;
+            }
+
+            // ============================================================
+            // OBTENÇÃO CPF E BUSCA NO BANCO DE DADOS
+            // ============================================================
+
+            string? cpf = ExcelHelper.ObterValor(row, ExcelHelper.ColunasProjetos.CPF_Responsavel);
+
+            if (!string.IsNullOrWhiteSpace(cpf))
+            {
+                try
+                {
+                    cpf = ValidationHelper.VerificarCPF(cpf);
+
+                    var responsavelExistente = await _db.Responsaveis
+                   .Include(r => r.Identidade)
+                   .FirstOrDefaultAsync(r => r.Identidade != null && r.Identidade.CPF == cpf);
+
+                    if (responsavelExistente != null)
+                    {
+                        return responsavelExistente;
+                    }
+
+                }
+                catch
+                {
+                    EnviarErro(numeroLinha, $"CPF do responsável inválido: {cpf}");
+                    cpf = null;
+                }
+            }
+            else
+            {
+                cpf = null;
+            }
+
+            // ============================================================
+            //  CRIACAO RESPONSAVEL
+            // ============================================================
+
+            Responsavel novoResponsavel = new Responsavel(
+                nomeResponsavel,
+                ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.IdentidadeGeneroResponsavel),
+                ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.RacaResponsavel),
+                ExtrairValidarData(row, ExcelHelper.ColunasProjetos.DataNascimentoResponsavel),
+                ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.ehProfessorResponsavel),
+                ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.NivelEnsinoResponsavel),
+                ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.ParticipanteResponsavel),
+                ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.ExperienciaResponsavel),
+                ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.Recomendacao)
+                );
+
+
+            //Insere o CPF dele
+            if (cpf != null)
+                novoResponsavel.Identidade = new Identidade(cpf);
+
+
+            // ============================================================
+            //  INSERÇÂO DE CONTATOS
+            // ============================================================
+
+            AdicionarContatosProjeto(row, novoResponsavel);
+
+            // ============================================================
+            //  SALVAR NO BANCO DE DADOS
+            // ============================================================
+
+            _db.Responsaveis.Add(novoResponsavel);
+
+            try
+            {
+                await _db.SaveChangesAsync();
+                return novoResponsavel;
+
+            }
+            catch (Exception ex)
+            {
+                //Erro Banco de Dados
+                string erroMsg = ex.InnerException?.Message ?? ex.Message;
+                EnviarErro(numeroLinha, $"Erro ao salvar a Responsavel no Banco de Dados: {erroMsg}");
+
+                // REMOVE A ENTIDADE COM ERRO DO CONTEXTO PARA NÃO QUEBRAR A PRÓXIMA LINHA
+                _db.Entry(novoResponsavel).State = EntityState.Detached;
+
+                return null; //Inserção falhou
+            }
+        }
+
+        // ============================================================
+        // RESPONSÁVEL DA ABA DE FEIRAS
+        // ============================================================
+
+        public async Task<Responsavel?> ObterOuCriarFeiraAsync(IXLRow row, int numeroLinha, bool isContato)
+        {
+            // ============================================================
+            //  OBTENÇÃO NOME
+            // ============================================================
+
+            int colunaNome;
+            int colunaSobrenome;
+
+            if (isContato)
+            {
+                colunaNome = ExcelHelper.ColunasFeiras.NomeResponsavelContatoFeira;
+                colunaSobrenome = 0;
+            }
+            else
+            {
+                colunaNome = ExcelHelper.ColunasFeiras.NomeResponsavel;
+                colunaSobrenome = ExcelHelper.ColunasFeiras.SobrenomeResponsavel;
+            }
+
+            string? nomeResponsavel;
+
+            if (isContato)
+            {
+                nomeResponsavel = ExtrairValidarNome(
+                    row,
+                    ExcelHelper.ColunasFeiras.NomeResponsavelContatoFeira
+                );
+            }
+            else
+            {
+                string? nome = ExtrairValidarTexto(row, colunaNome);
+                string? sobrenome = ExtrairValidarTexto(row, colunaSobrenome);
+
+                nomeResponsavel = $"{nome} {sobrenome}".Trim();
+            }
+
+            // ============================================================
+            // VALIDAÇÃO DO NOME
+            // ============================================================
+
+            if (string.IsNullOrWhiteSpace(nomeResponsavel))
+            {
+                EnviarErro(
+                    numeroLinha,
+                    "Nome do responsável não informado."
+                );
+
+                return null;
+            }
+
+            // ============================================================
+            // OBTENÇÃO CPF E BUSCA NO BANCO DE DADOS
             // ============================================================
 
             string? cpf = ExcelHelper.ObterValor(row, ExcelHelper.ColunasFeiras.CPF_Responsavel);
@@ -56,7 +221,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
 
             // ============================================================
-            //  CRIACAO NOVO REGISTRO DE RESPONSAVEL
+            //  CRIACAO RESPONSAVEL
             // ============================================================
 
             Responsavel novoResponsavel;
@@ -94,7 +259,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
             //  INSERÇÂO DE CONTATOS
             // ============================================================
 
-            AdicionarContatos(row, novoResponsavel, isContato);
+            AdicionarContatosFeira(row, novoResponsavel, isContato);
 
             // ============================================================
             //  SALVAR NO BANCO DE DADOS
@@ -121,13 +286,32 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
         }
 
-        private void AdicionarContatos(IXLRow row, Responsavel responsavel, bool isContato)
+        private void AdicionarContatosFeira(IXLRow row, Responsavel responsavel, bool isContato)
         {
             int colEmail = isContato ? ExcelHelper.ColunasFeiras.EmailContatoFeira : ExcelHelper.ColunasFeiras.EmailResponsavel;
             int colTelefone = isContato ? ExcelHelper.ColunasFeiras.TelefoneContatoFeira : ExcelHelper.ColunasFeiras.TelefoneResponsavel;
 
             string? email = ExtrairValidarEmail(row, colEmail);
             string? telefone = ExtrairValidarTelefone(row, colTelefone);
+
+
+            if (email != null)
+            {
+                responsavel.Email.Add(new Email(email));
+            }
+
+            if (telefone != null)
+            {
+                responsavel.Telefone.Add(new Telefone(telefone));
+            }
+
+        }
+
+        private void AdicionarContatosProjeto(IXLRow row, Responsavel responsavel)
+        {
+
+            string? email = ExtrairValidarEmail(row, ExcelHelper.ColunasProjetos.EmailResponsavel);
+            string? telefone = ExtrairValidarTelefone(row, ExcelHelper.ColunasProjetos.TelefoneResponsavel);
 
 
             if (email != null)

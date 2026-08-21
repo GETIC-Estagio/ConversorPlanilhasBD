@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ConversorPlanilhaBD.Importing
+namespace ConversorPlanilhaBD.Helpers
 {
     /// <summary>
     /// Essa classe contém métodos auxiliares para trabalhar com planilhas Excel,

@@ -5,6 +5,11 @@ using ConversorPlanilhaBD.Importacao;
 
 namespace ConversorPlanilhaBD
 {
+    /// <summary>
+    /// Formulário responsável por gerenciar a interface gráfica de importação de planilhas.
+    /// Executa o processo de forma assíncrona em background para evitar o travamento da UI,
+    /// atualizando barras de progresso, contadores e logs de erro em tempo real através de eventos.
+    /// </summary>
     public partial class FormImportacao : Form
     {
         private readonly string _connectionString;

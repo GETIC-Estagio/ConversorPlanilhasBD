@@ -2,6 +2,7 @@
 using ConversorPlanilhaBD.Data;
 using ConversorPlanilhaBD.Importacao;
 using ConversorPlanilhaBD.Model;
+using ConversorPlanilhaBD.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Text;
 
 namespace ConversorPlanilhaBD.Importing.Makers
 {
-    public class ProjetoMaker : ValidationMaker
+    public class ProjetoMaker : MakerHelper
     {
         private readonly CienciaJovemDb _db;
 

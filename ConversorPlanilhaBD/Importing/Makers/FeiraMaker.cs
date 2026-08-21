@@ -2,6 +2,7 @@
 using ConversorPlanilhaBD.Data;
 using ConversorPlanilhaBD.Importacao;
 using ConversorPlanilhaBD.Model;
+using ConversorPlanilhaBD.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ConversorPlanilhaBD.Importing.Makers
 {
-    public class FeiraMaker : ValidationMaker
+    public class FeiraMaker : MakerHelper
     {
         private readonly CienciaJovemDb _db;
 
@@ -31,7 +32,12 @@ namespace ConversorPlanilhaBD.Importing.Makers
             // ============================================================
 
             string? nomeFeira = ExtrairValidarTexto(row, ExcelHelper.ColunasFeiras.NomeFeira);
-            if (string.IsNullOrWhiteSpace(nomeFeira)) return null; // Não dá pra salvar sem nome
+            if (string.IsNullOrWhiteSpace(nomeFeira))
+            {
+                EnviarErro(numeroLinha, "Nome da feira não informado.");
+                return null; // Não dá pra salvar sem nome
+            }
+            nomeFeira = nomeFeira.Trim();
 
             var feiraExistente = await _db.Feiras.FirstOrDefaultAsync(f => f.Nome != null && f.Nome.ToLower() == nomeFeira.ToLower());
             if (feiraExistente != null) return feiraExistente;
