@@ -100,9 +100,24 @@ namespace ConversorPlanilhaBD.Importing.Makers
             // ============================================================
 
             _db.Responsaveis.Add(novoResponsavel);
-            await _db.SaveChangesAsync();
 
-            return novoResponsavel;
+            try
+            {
+                await _db.SaveChangesAsync();
+                return novoResponsavel;
+
+            }
+            catch (Exception ex)
+            {
+                //Erro Banco de Dados
+                string erroMsg = ex.InnerException?.Message ?? ex.Message;
+                EnviarErro(numeroLinha, $"Erro ao salvar a Responsavel no Banco de Dados: {erroMsg}");
+
+                // REMOVE A ENTIDADE COM ERRO DO CONTEXTO PARA NÃO QUEBRAR A PRÓXIMA LINHA
+                _db.Entry(novoResponsavel).State = EntityState.Detached;
+
+                return null; //Inserção falhou
+            }
         }
 
         private void AdicionarContatos(IXLRow row, Responsavel responsavel, bool isContato)

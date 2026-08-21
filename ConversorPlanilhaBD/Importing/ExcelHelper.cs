@@ -121,7 +121,7 @@ namespace ConversorPlanilhaBD.Importing
             // INSTITUICAO ORGANIZADORA
             //=================================
 
-            public const int InstituicaoOrganizadora = 67;
+            public const int InstituicaoOrganizadoraNome = 67;
 
             //=================================
             // RESPONSAVEL DE CONTATO DA FEIRA

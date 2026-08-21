@@ -3,6 +3,7 @@ using ConversorPlanilhaBD.Data;
 using ConversorPlanilhaBD.Importacao;
 using ConversorPlanilhaBD.Importing.Makers;
 using ConversorPlanilhaBD.Model;
+using ConversorPlanilhaBD.Model.AuxModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -51,7 +52,69 @@ namespace ConversorPlanilhaBD.Importing
             foreach (var row in linhas)
             {
                 int numeroLinha = row.RowNumber();
-                bool erroNaLinha = false;
+
+                try
+                {
+                    //Cria os Responsaveis
+                    var responsavelSubmissao = await _responsavelMaker.ObterOuCriarAsync(row, numeroLinha, isContato: false);
+                    var responsavelContato = await _responsavelMaker.ObterOuCriarAsync(row, numeroLinha, isContato: true);
+
+                    //Cria as Instituicoes
+                    var instSede = await _instituicaoMaker.ObterOuCriarAsync(row, numeroLinha, isOrganizadora: false);
+                    var instOrganizadora = await _instituicaoMaker.ObterOuCriarAsync(row, numeroLinha, isOrganizadora: true);
+
+                    // Vínculo Auxiliar (Responsável <-> Instituição Sede)
+                    if (responsavelSubmissao != null && instSede != null)
+                    {
+                        await VincularAuxiliarAsync(row, numeroLinha, responsavelSubmissao, instSede);
+                    }
+
+                    // Cria a Feira
+                    var feira = await _feiraMaker.ObterOuCriarAsync(row, numeroLinha, responsavelSubmissao, instSede, instOrganizadora, responsavelContato);
+
+                    // Se a feira foi criada, deu sucesso na linha
+                    if (feira != null) _resultado.RegistrarSucesso();
+                }
+                catch (Exception ex)
+                {
+                    _resultado.RegistrarErro(numeroLinha, $"Erro inesperado: {ex.Message}");
+                    Erro?.Invoke($"Linha {numeroLinha}: {ex.Message}");
+                }
+                processadas++;
+                Progresso?.Invoke(processadas, total);
+                ContadoresAtualizados?.Invoke(_resultado.Sucessos, _resultado.Erros);
+            }
+        }
+
+        private async Task VincularAuxiliarAsync(IXLRow row, int linha, Responsavel responsavel, Instituicao instituicao)
+        {
+            bool jaExiste = await _db.AuxInstituicoesResponsaveis
+                .AnyAsync(a => a.ResponsavelId == responsavel.Id && a.InstituicaoId == instituicao.Id);
+
+            if (!jaExiste)
+            {
+                string funcao = ExcelHelper.ObterValor(row, ExcelHelper.ColunasFeiras.FuncaoResponsavelInstituicao) ?? "";
+
+                var aux = new AuxInstituicaoResponsavel
+                {
+                    ResponsavelId = responsavel.Id,
+                    InstituicaoId = instituicao.Id,
+                    FuncaoInstituicao = funcao
+                };
+
+                _db.AuxInstituicoesResponsaveis.Add(aux);
+
+                try
+                {
+                    await _db.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    string erroMsg = ex.InnerException?.Message ?? ex.Message;
+                    _resultado.RegistrarErro(linha, $"Erro ao criar vínculo Responsável-Instituição: {erroMsg}");
+
+                    _db.Entry(aux).State = EntityState.Detached;
+                }
             }
         }
     }

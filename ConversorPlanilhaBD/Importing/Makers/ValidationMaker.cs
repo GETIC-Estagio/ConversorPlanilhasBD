@@ -70,6 +70,25 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
         }
 
+        protected DateTime? ExtrairValidarDataHora(IXLRow row, int coluna)
+        {
+            try
+            {
+                string? valor = ExcelHelper.ObterValor(row, coluna);
+
+                if (string.IsNullOrWhiteSpace(valor))
+                {
+                    throw new ArgumentException("A célula está vazia.");
+                }
+
+                return ValidationHelper.VerificarDateTime(valor);
+            }
+            catch
+            {
+                EnviarErro(row.RowNumber(), $"Data inválida: {ExcelHelper.ObterValor(row, coluna)}");
+                return null;
+            }
+        }
 
         protected string? ExtrairValidarTexto(IXLRow row, int coluna)
         {
@@ -125,6 +144,80 @@ namespace ConversorPlanilhaBD.Importing.Makers
             catch
             {
                 EnviarErro(row.RowNumber(), $"Telefone inválido: {ExcelHelper.ObterValor(row, coluna)}");
+                return null;
+            }
+        }
+
+        protected string? ExtrairValidarPais(IXLRow row, int coluna)
+        {
+            try
+            {
+                string? valor = ExcelHelper.ObterValor(row, coluna);
+                if (string.IsNullOrWhiteSpace(valor))
+                {
+                    throw new ArgumentException("A célula está vazia.");
+                }
+                ValidationHelper.VerificarPais(valor);
+                return valor;
+            }
+            catch
+            {
+                EnviarErro(row.RowNumber(), $"País inválido: {ExcelHelper.ObterValor(row, coluna)}");
+                return null;
+            }
+        }
+
+        protected string? ExtrairValidarEstado(IXLRow row, int coluna)
+        {
+            try
+            {
+                string? valor = ExcelHelper.ObterValor(row, coluna);
+                if (string.IsNullOrWhiteSpace(valor))
+                {
+                    throw new ArgumentException("A célula está vazia.");
+                }
+                ValidationHelper.VerificarEstadoBR(valor);
+                return valor;
+            }
+            catch
+            {
+                EnviarErro(row.RowNumber(), $"Estado inválido: {ExcelHelper.ObterValor(row, coluna)}");
+                return null;
+            }
+        }
+
+        protected double? ExtrairValidarDouble(IXLRow row, int coluna)
+        {
+            try
+            {
+                string? valor = ExcelHelper.ObterValor(row, coluna);
+                if (string.IsNullOrWhiteSpace(valor))
+                {
+                    throw new ArgumentException("A célula está vazia.");
+                }
+                return ValidationHelper.VerificarNumeroDouble(valor); 
+            }
+            catch
+            {
+                EnviarErro(row.RowNumber(), $"Numero inválido: {ExcelHelper.ObterValor(row, coluna)}");
+                return null;
+            }
+        }
+
+        protected int? ExtrairValidarInt(IXLRow row, int coluna)
+        {
+            try
+            {
+                string? valor = ExcelHelper.ObterValor(row, coluna);
+                if (string.IsNullOrWhiteSpace(valor))
+                {
+                    throw new ArgumentException("A célula está vazia.");
+                }
+                return ValidationHelper.VerificarNumeroInt(valor);
+            }
+            catch
+            {
+                EnviarErro(row.RowNumber(), $"Numero inválido: {ExcelHelper.ObterValor(row, coluna)}");
                 return null;
             }
         }

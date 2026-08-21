@@ -3,6 +3,7 @@ using System;
 using ConversorPlanilhaBD.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ConversorPlanilhaBD.Migrations
 {
     [DbContext(typeof(CienciaJovemDb))]
-    partial class CienciaJovemDbModelSnapshot : ModelSnapshot
+    [Migration("20260821165846_AdicionandoColunaParticipacaoCJ")]
+    partial class AdicionandoColunaParticipacaoCJ
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

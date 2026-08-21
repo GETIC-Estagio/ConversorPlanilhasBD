@@ -124,7 +124,7 @@ namespace ConversorPlanilhaBD
                     // IMPORTAÇÃO
                     // --------------------------------------------
 
-                    return importador.Importar();
+                    return importador.ImportarAsync();
                 });
 
                 // --------------------------------------------

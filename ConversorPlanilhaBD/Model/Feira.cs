@@ -97,7 +97,7 @@ namespace ConversorPlanilhaBD.Model
         public Responsavel? ResponsavelContato { get; set; }
 
         //Cria um construtor vazio, para o EF CORE funcionar
-        private Feira() { }
+        public Feira() { }
 
         public Feira(string? nome, string? alcance, string? endereco, string? estado,
             string? periodoRealizacao, string? dataRealizacao, string? modalidadeParticipacao,

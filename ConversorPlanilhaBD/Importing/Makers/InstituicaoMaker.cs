@@ -6,6 +6,7 @@ using ConversorPlanilhaBD.Model.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConversorPlanilhaBD.Importing.Makers
 {
@@ -24,13 +25,14 @@ namespace ConversorPlanilhaBD.Importing.Makers
             //  OBTENÇÃO CNPJ E BUSCA NO BANCO DE DADOS
             // ============================================================
 
-            int colunaNome = isOrganizadora ? ExcelHelper.ColunasFeiras.InstituicaoOrganizadora : ExcelHelper.ColunasFeiras.NomeInstituicao;
+            int colunaNome = isOrganizadora ? ExcelHelper.ColunasFeiras.InstituicaoOrganizadoraNome : ExcelHelper.ColunasFeiras.NomeInstituicao;
             string? nomeInstituicao = ExtrairValidarTexto(row, colunaNome);
 
-            // Se for uma instituição sem nome, não podemos criar
+            // Se for uma instituição sem nome, não é criado
             if (string.IsNullOrWhiteSpace(nomeInstituicao)) return null;
 
             string? cnpj = null;
+
             if (!isOrganizadora)
             {
                 cnpj = ExcelHelper.ObterValor(row, ExcelHelper.ColunasFeiras.CNPJ_Instituicao);
@@ -52,7 +54,6 @@ namespace ConversorPlanilhaBD.Importing.Makers
                 }
             }
 
-            // 2. BUSCA NO BANCO DE DADOS (Por CNPJ primeiro, ou por Nome)
             Instituicao? instituicaoExistente = null;
 
             if (cnpj != null)
@@ -67,35 +68,74 @@ namespace ConversorPlanilhaBD.Importing.Makers
 
             if (instituicaoExistente != null) return instituicaoExistente;
 
-            // 3. CRIAÇÃO DO NOVO REGISTRO
-            Instituicao novaInstituicao = new Instituicao { Nome = nomeInstituicao };
+            // ============================================================
+            //  CRIACAO INSTITUICAO
+            // ============================================================
+
+            Instituicao novaInstituicao = new Instituicao(nomeInstituicao);
 
             if (!isOrganizadora)
             {
                 novaInstituicao.CNPJ = cnpj;
-                novaInstituicao.Pais = ExtrairValidarTexto(row, ExcelHelper.ColunasFeiras.PaisInstituicao);
-                novaInstituicao.Estado = ExtrairValidarTexto(row, ExcelHelper.ColunasFeiras.EstadoInstituicao);
+                novaInstituicao.Pais = ExtrairValidarPais(row, ExcelHelper.ColunasFeiras.PaisInstituicao);
+
+                if (novaInstituicao.Pais != null &&
+                    (novaInstituicao.Pais.ToLower() == "brazil" ||
+                     novaInstituicao.Pais.ToLower() == "brasil" ||
+                     novaInstituicao.Pais.ToLower() == "br"))
+                {
+                    novaInstituicao.Estado = ExtrairValidarEstado(row, ExcelHelper.ColunasFeiras.EstadoInstituicao);
+                }
+                else
+                {
+                    novaInstituicao.Estado = ExtrairValidarTexto(row, ExcelHelper.ColunasFeiras.EstadoInstituicao);
+                }
+
                 novaInstituicao.Municipio = ExtrairValidarTexto(row, ExcelHelper.ColunasFeiras.MunicipioInstituicao);
                 novaInstituicao.Endereco = ExtrairValidarTexto(row, ExcelHelper.ColunasFeiras.EnderecoInstituicao);
                 novaInstituicao.TipoRede = ExtrairValidarTexto(row, ExcelHelper.ColunasFeiras.TipoRedeInstituicao);
-                novaInstituicao.Gre = ExtrairValidarTexto(row, ExcelHelper.ColunasFeiras.GreInstituicao);
+                novaInstituicao.GRE = ExtrairValidarTexto(row, ExcelHelper.ColunasFeiras.GreInstituicao);
 
-                // IDEB e IDHM normalmente são números (double). Se na sua classe forem string, use ExtrairValidarTexto.
-                // Se forem double, ideal é ter um ExtrairValidarDouble no ValidationMaker. Deixarei como texto genérico por segurança:
+                novaInstituicao.IDEB = ExtrairValidarDouble(row, ExcelHelper.ColunasFeiras.IdebInstituicao);
+                novaInstituicao.IDHM = ExtrairValidarDouble(row, ExcelHelper.ColunasFeiras.IdhmInstituicao);
+
+
+                novaInstituicao.ParticipacaoCienciaJovem = ExtrairValidarTexto(row, ExcelHelper.ColunasFeiras.ParticipouCienciaJovemInstituicao);
                 novaInstituicao.OfertaEnsino = ExtrairValidarTexto(row, ExcelHelper.ColunasFeiras.OfertaEnsinoInstituicao);
-                novaInstituicao.AdereTempoIntegral = ExtrairValidarTexto(row, ExcelHelper.ColunasFeiras.AdereTempoIntegralInstituicao);
+                novaInstituicao.Adere = ExtrairValidarTexto(row, ExcelHelper.ColunasFeiras.AdereTempoIntegralInstituicao);
                 novaInstituicao.TipologiaMunicipio = ExtrairValidarTexto(row, ExcelHelper.ColunasFeiras.TipologiaMunicipioInstituicao);
                 novaInstituicao.ApoioFinanceiro = ExtrairValidarTexto(row, ExcelHelper.ColunasFeiras.ApoioFinanceiroInstituicao);
 
-                // 4. INSERÇÃO DE CONTATOS
+                // ============================================================
+                //  INSERINDO CONTATOS
+                // ============================================================
+
                 AdicionarContatos(row, novaInstituicao);
             }
 
-            // 5. SALVAR NO BANCO DE DADOS
-            _db.Instituicoes.Add(novaInstituicao);
-            await _db.SaveChangesAsync();
+            // ============================================================
+            //  SALVAR INSTITUICAO NO BANCO
+            // ============================================================
 
-            return novaInstituicao;
+            _db.Instituicoes.Add(novaInstituicao);
+
+            try
+            {
+                await _db.SaveChangesAsync();
+                return novaInstituicao;
+
+            }
+            catch (Exception ex)
+            {
+                //Erro Banco de Dados
+                string erroMsg = ex.InnerException?.Message ?? ex.Message;
+                EnviarErro(numeroLinha, $"Erro ao salvar a Instituicao no Banco de Dados: {erroMsg}");
+
+                // REMOVE A ENTIDADE COM ERRO DO CONTEXTO PARA NÃO QUEBRAR A PRÓXIMA LINHA
+                _db.Entry(novaInstituicao).State = EntityState.Detached;
+
+                return null; //Inserção falhou
+            }
         }
 
         private void AdicionarContatos(IXLRow row, Instituicao instituicao)

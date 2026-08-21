@@ -28,7 +28,7 @@ namespace ConversorPlanilhaBD.Model.AuxModels
         public string? FuncaoInstituicao { get; set; }
 
         // Construtor obrigatório do EF Core
-        protected AuxInstituicaoResponsavel() { }
+        public AuxInstituicaoResponsavel() { }
 
         public AuxInstituicaoResponsavel(Responsavel? responsavel, Instituicao? instituicao, 
             string? funcaoInsituicao)
