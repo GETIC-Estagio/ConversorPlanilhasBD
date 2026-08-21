@@ -24,8 +24,6 @@ namespace ConversorPlanilhaBD.Importing.Makers
         public async Task<Aluno?> ObterOuCriarAsync(IXLRow row, int numeroLinha,
             int colNome, int colRG, int colOrgao, int colCPF, int colRaca, int colGenero, int colEmail)
         {
-            string? nome = ExtrairValidarNome(row, colNome);
-            if (string.IsNullOrWhiteSpace(nome)) return null; // Se não tem nome, ignora este aluno
 
             string? cpf = ExcelHelper.ObterValor(row, colCPF);
 
@@ -34,10 +32,11 @@ namespace ConversorPlanilhaBD.Importing.Makers
                 try
                 {
                     cpf = ValidationHelper.VerificarCPF(cpf);
-                    var alunoExistente = await _db.Pessoas
+                    var alunoExistente = await _db.Alunos
                         .Include(p => p.Identidade)
                         .FirstOrDefaultAsync(p => p.Identidade != null && p.Identidade.CPF == cpf);
-                    if (alunoExistente != null) return (Aluno)alunoExistente;
+
+                    if (alunoExistente != null) return alunoExistente;
                 }
                 catch
                 {
@@ -47,14 +46,14 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
 
             var novoAluno = new Aluno(
-                nome,
+                ExtrairValidarTexto(row, colNome),
                 ExtrairValidarTexto(row, colGenero),
                 ExtrairValidarTexto(row, colRaca)
             );
 
             novoAluno.Identidade = new Identidade(cpf)
             {
-                RG = ExtrairValidarTexto(row, colRG),
+                RG = ExtrairValidarRG(row, colRG),
                 OrgaoExpedidor = ExtrairValidarTexto(row, colOrgao)
             };
 

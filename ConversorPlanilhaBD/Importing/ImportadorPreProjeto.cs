@@ -26,9 +26,6 @@ namespace ConversorPlanilhaBD.Importing
         private readonly AlunoMaker _alunoMaker;
         private readonly ProjetoMaker _projetoMaker;
 
-        // NOTA: Você precisará adaptar o seu ResponsavelMaker e InstituicaoMaker atuais 
-        // para aceitarem quais constantes de coluna usar (ColunasFeiras ou ColunasProjetos)
-        // ou criar versões específicas para Projetos.
         private readonly ResponsavelMaker _responsavelMaker;
         private readonly InstituicaoMaker _instituicaoMaker;
 
@@ -62,11 +59,11 @@ namespace ConversorPlanilhaBD.Importing
 
                 try
                 {
-                    // 1. Cria Responsável e Instituição (Adaptar o maker para ler de ColunasProjetos)
-                    var responsavel = await _responsavelMaker.ObterOuCriarAsync(row, numeroLinha, isContato: false);
-                    var instituicao = await _instituicaoMaker.ObterOuCriarAsync(row, numeroLinha, isOrganizadora: false);
+                    // 1. Cria Responsável e Instituição 
+                    var responsavel = await _responsavelMaker.ObterOuCriarPreProjetoAsync(row, numeroLinha);
+                    var instituicao = await _instituicaoMaker.ObterOuCriarProjetoAsync(row, numeroLinha);
 
-                    // 2. Vínculo Auxiliar (Opcional, se existir a lógica)
+                    // 2. Vínculo Auxiliar 
                     if (responsavel != null && instituicao != null)
                     {
                         await VincularAuxiliarAsync(row, numeroLinha, responsavel, instituicao);

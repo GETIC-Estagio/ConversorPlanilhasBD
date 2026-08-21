@@ -11,6 +11,9 @@ using ConversorPlanilhaBD.Helpers;
 
 namespace ConversorPlanilhaBD.Importing.Makers
 {
+    /// <summary>
+    /// Classe responsável por criar uma Instituição seja de Feira ou Projeto
+    /// </summary>
     public class InstituicaoMaker : MakerHelper
     {
         private readonly CienciaJovemDb _db;
@@ -35,17 +38,6 @@ namespace ConversorPlanilhaBD.Importing.Makers
                 : ExcelHelper.ColunasFeiras.NomeInstituicao;
 
             string? nomeInstituicao = ExtrairValidarTexto(row, colunaNome);
-
-
-            if (string.IsNullOrWhiteSpace(nomeInstituicao))
-            {
-                EnviarErro(
-                    numeroLinha,
-                    "Nome da instituição não informado."
-                );
-
-                return null;
-            }
 
             // ============================================================
             //  VALIDACAO CNPJ
@@ -171,16 +163,6 @@ namespace ConversorPlanilhaBD.Importing.Makers
             string? nomeInstituicao = ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.NomeInstituicao);
 
 
-            if (string.IsNullOrWhiteSpace(nomeInstituicao))
-            {
-                EnviarErro(
-                    numeroLinha,
-                    "Nome da instituição não informado."
-                );
-
-                return null;
-            }
-
             // ============================================================
             //  VALIDACAO CNPJ
             // ============================================================
@@ -223,8 +205,9 @@ namespace ConversorPlanilhaBD.Importing.Makers
             //  CRIACAO INSTITUICAO
             // ============================================================
 
-            Instituicao novaInstituicao = new Instituicao(nomeInstituicao);
+            Instituicao novaInstituicao = new Instituicao();
 
+            novaInstituicao.Nome = ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.NomeInstituicao);
             novaInstituicao.CNPJ = cnpj;
             novaInstituicao.Pais = ExtrairValidarPais(row, ExcelHelper.ColunasProjetos.PaisInstituicao);
 

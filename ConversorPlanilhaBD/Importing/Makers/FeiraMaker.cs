@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace ConversorPlanilhaBD.Importing.Makers
 {
+    /// <summary>
+    /// Classe responsável por criar uma feira
+    /// </summary>
     public class FeiraMaker : MakerHelper
     {
         private readonly CienciaJovemDb _db;

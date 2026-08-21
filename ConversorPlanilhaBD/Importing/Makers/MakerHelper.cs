@@ -72,22 +72,20 @@ namespace ConversorPlanilhaBD.Importing.Makers
 
         protected DateTime? ExtrairValidarDataHora(IXLRow row, int coluna)
         {
-            try
-            {
-                string? valor = ExcelHelper.ObterValor(row, coluna);
+            var valor = ExcelHelper.ObterValor(row, coluna);
 
-                if (string.IsNullOrWhiteSpace(valor))
-                {
-                    throw new ArgumentException("A célula está vazia.");
-                }
-
-                return ValidationHelper.VerificarDateTime(valor);
-            }
-            catch
+            if (string.IsNullOrWhiteSpace(valor))
             {
-                EnviarErro(row.RowNumber(), $"Data inválida: {ExcelHelper.ObterValor(row, coluna)}");
                 return null;
             }
+
+            if (DateTime.TryParse(valor, out DateTime data))
+            {
+                return DateTime.SpecifyKind(data, DateTimeKind.Utc);
+            }
+
+            EnviarErro(row.RowNumber(), $"Data/hora inválida: {valor}");
+            return null;
         }
 
         protected string? ExtrairValidarTexto(IXLRow row, int coluna)
@@ -222,17 +220,16 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
         }
 
-        protected string? ExtrairValidarRG(IXLRow row, int coluna, int coluna2)
+        protected string? ExtrairValidarRG(IXLRow row, int coluna)
         {
             try
             {
-                string? rg = ExcelHelper.ObterValor(row, coluna);
-                string? orgao = ExcelHelper.ObterValor(row, coluna2);
-                if (string.IsNullOrWhiteSpace(rg) || string.IsNullOrWhiteSpace(orgao))
+                string? valor = ExcelHelper.ObterValor(row, coluna);
+                if (string.IsNullOrWhiteSpace(valor))
                 {
                     throw new ArgumentException("A célula está vazia.");
                 }
-                return ValidationHelper.VerificarRG(rg, orgao);
+                return ValidationHelper.VerificarRG(valor);
             }
             catch
             {

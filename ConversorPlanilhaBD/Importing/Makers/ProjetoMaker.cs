@@ -23,13 +23,22 @@ namespace ConversorPlanilhaBD.Importing.Makers
             IXLRow row, int numeroLinha,
             Responsavel? responsavel, Professor? professor, List<Aluno> alunos)
         {
+            // ============================================================
+            // NOME DO PROJETO
+            // ============================================================
+
             string? nomeProjeto = ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.NomeProjeto);
             if (string.IsNullOrWhiteSpace(nomeProjeto)) return null;
+
+
+            // ============================================================
+            // BUSCA PROJETO EXISTENTE
+            // ============================================================
 
             var projetoExistente = await _db.Projetos.FirstOrDefaultAsync(p => p.Nome != null && p.Nome.ToLower() == nomeProjeto.ToLower());
             if (projetoExistente != null) return projetoExistente;
 
-            // Supondo construtor da classe Projeto
+
             var novoProjeto = new Projeto
             (
                 nomeProjeto,

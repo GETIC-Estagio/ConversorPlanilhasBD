@@ -22,8 +22,6 @@ namespace ConversorPlanilhaBD.Importing.Makers
 
         public async Task<Professor?> ObterOuCriarAsync(IXLRow row, int numeroLinha)
         {
-            string? nome = ExtrairValidarNome(row, ExcelHelper.ColunasProjetos.NomeProfessor);
-            if (string.IsNullOrWhiteSpace(nome)) return null;
 
             string? cpf = ExcelHelper.ObterValor(row, ExcelHelper.ColunasProjetos.CPF_Professor);
 
@@ -33,10 +31,13 @@ namespace ConversorPlanilhaBD.Importing.Makers
                 try
                 {
                     cpf = ValidationHelper.VerificarCPF(cpf);
+
                     var profExistente = await _db.Professores
                         .Include(p => p.Identidade)
                         .FirstOrDefaultAsync(p => p.Identidade != null && p.Identidade.CPF == cpf);
-                    if (profExistente != null) return profExistente;
+
+                    if (profExistente != null) 
+                        return profExistente;
                 }
                 catch
                 {
@@ -46,7 +47,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
 
             var novoProfessor = new Professor(
-                nome,
+                ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.NomeProfessor),
                 ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.GeneroProfessor),
                 ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.RacaProfessor),
                 ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.MatriculaProfessor)
@@ -54,7 +55,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
 
             novoProfessor.Identidade = new Identidade(cpf)
             {
-                RG = ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.RGProfessor),
+                RG = ExtrairValidarRG(row, ExcelHelper.ColunasProjetos.RGProfessor),
                 OrgaoExpedidor = ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.OrgaoExpedidorProfessor)
             };
 
@@ -79,6 +80,4 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
         }
     }
-
-   
 }

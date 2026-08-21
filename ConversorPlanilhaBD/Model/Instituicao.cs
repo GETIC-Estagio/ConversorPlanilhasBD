@@ -84,7 +84,7 @@ namespace ConversorPlanilhaBD.Model
         public List<Email> Email { get; set; } = new();
 
         //Cria um construtor vazio, para o EF CORE funcionar
-        protected Instituicao() { }
+        public Instituicao() { }
 
         public Instituicao (string? nome)
         {

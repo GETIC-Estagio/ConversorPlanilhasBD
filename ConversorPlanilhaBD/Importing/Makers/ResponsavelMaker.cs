@@ -11,6 +11,9 @@ using ConversorPlanilhaBD.Helpers;
 
 namespace ConversorPlanilhaBD.Importing.Makers
 {
+    /// <summary>
+    /// Classe responsável por criar um responsável seja de Feira ou Projeto
+    /// </summary>
     public class ResponsavelMaker : MakerHelper
     {
         private readonly CienciaJovemDb _db;
@@ -26,26 +29,6 @@ namespace ConversorPlanilhaBD.Importing.Makers
 
         public async Task<Responsavel?> ObterOuCriarPreProjetoAsync(IXLRow row, int numeroLinha)
         {
-            // ============================================================
-            //  OBTENÇÃO NOME
-            // ============================================================
-
-            string? nomeResponsavel = ExtrairValidarNome(row, ExcelHelper.ColunasProjetos.NomeCompletoResponsavel);
-
-            // ============================================================
-            // VALIDAÇÃO DO NOME
-            // ============================================================
-
-            if (string.IsNullOrWhiteSpace(nomeResponsavel))
-            {
-                EnviarErro(
-                    numeroLinha,
-                    "Nome do responsável não informado."
-                );
-
-                return null;
-            }
-
             // ============================================================
             // OBTENÇÃO CPF E BUSCA NO BANCO DE DADOS
             // ============================================================
@@ -84,7 +67,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
             // ============================================================
 
             Responsavel novoResponsavel = new Responsavel(
-                nomeResponsavel,
+                ExtrairValidarNome(row, ExcelHelper.ColunasProjetos.NomeCompletoResponsavel),
                 ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.IdentidadeGeneroResponsavel),
                 ExtrairValidarTexto(row, ExcelHelper.ColunasProjetos.RacaResponsavel),
                 ExtrairValidarData(row, ExcelHelper.ColunasProjetos.DataNascimentoResponsavel),
@@ -171,20 +154,6 @@ namespace ConversorPlanilhaBD.Importing.Makers
                 string? sobrenome = ExtrairValidarTexto(row, colunaSobrenome);
 
                 nomeResponsavel = $"{nome} {sobrenome}".Trim();
-            }
-
-            // ============================================================
-            // VALIDAÇÃO DO NOME
-            // ============================================================
-
-            if (string.IsNullOrWhiteSpace(nomeResponsavel))
-            {
-                EnviarErro(
-                    numeroLinha,
-                    "Nome do responsável não informado."
-                );
-
-                return null;
             }
 
             // ============================================================
