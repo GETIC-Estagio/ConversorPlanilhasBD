@@ -10,6 +10,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ConversorPlanilhaBD.Model
 {
+    /// <summary>
+    /// Guarda os dados de uma pessoa, como nome, identidade, emails, telefones, gênero e raça.
+    /// </summary>
     public class Pessoa
     {
 
@@ -18,30 +21,27 @@ namespace ConversorPlanilhaBD.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        //Guarda o nome da pessoa
         public string? Nome { get; set; }
 
         //Guarda a Identidade separada por CPF e RG
-        //Se falar identidade sem órgão expedidor vai ser considerado como CPF
+        //Se vier identidade sem órgão expedidor, é CPF
         public Identidade? Identidade{ get; set; }
 
-        //Guarda uma lista de Emails e verifica se possui @
+        //Guarda uma lista de Emails
         public List<Email> Email { get; set; } = new();
 
-        //Guarda uma lista de Telefones e verifica se são somente numeros
+        //Guarda uma lista de Telefones
         public List<Telefone> Telefone { get; set; } = new();
 
-        //Identidade de Genero
-        public string? IdGenero { get; set; }
+        public string? Genero { get; set; }
 
         //Raça
         public string? Raca { get; set; }
 
-        /// <summary>
-        /// Somente quando for aluno
-        /// Guarda a chave estrangeira de Projeto
-        /// Relação (1 Projeto: N alunos)
-        /// </summary>
+
+        //Somente quando for aluno
+        //Guarda a chave estrangeira de Projeto
+        //Relação (1 Projeto: N alunos)
         public int? ProjetoId { get; set; }
         [ForeignKey("ProjetoId")]
         public Projeto? Projeto { get; set; }
@@ -50,11 +50,10 @@ namespace ConversorPlanilhaBD.Model
         //Cria um construtor vazio, para o EF CORE funcionar
         protected Pessoa() { }
 
-        //Construtor com as informacoes mais importantes
         public Pessoa(string? nome, string? idGenero, string? raca)
         {
             Nome = nome;
-            IdGenero = idGenero;
+            Genero = idGenero;
             Raca = raca;
         }
     }

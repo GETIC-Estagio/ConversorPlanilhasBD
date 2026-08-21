@@ -7,14 +7,17 @@ using System.Text;
 
 namespace ConversorPlanilhaBD.Model
 {
+    /// <summary>
+    /// Guarda os dados de um responsável, que é uma pessoa responsável por um projeto ou feira.
+    /// </summary>
     public class Responsavel : Pessoa
     {
-        //Campo referente a data de nascimento
         public DateOnly? DataNascimento { get; set; }
 
-        //Se é professor 
+        //Se o responsável é professor 
         public string? Professor { get; set; }
 
+        //Mestrado, doutorado, graduação, técnico, etc
         public string? NivelEnsino { get; set; }
 
         //Se já participou de outras edições da Ciência Jovem
@@ -26,21 +29,18 @@ namespace ConversorPlanilhaBD.Model
         //Como o responsavel ficou sabendo sobre as filiações de feiras e a pré-inscrição de projetos da 32ª Ciência Jovem
         public string? Recomendacao { get; set; }
 
-        /// <summary>
-        /// Guarda uma lista de AuxInstituicaoResponsavel
-        /// Por responsavel e instituicao ser uma relacao N:M
-        /// Foi criado essa classe auxiliar
-        /// </summary>
+        // Guarda uma lista de AuxInstituicaoResponsavel
+        // Por responsavel e instituicao ser uma relacao N:M
+        // Foi criado essa classe auxiliar
         public List<AuxInstituicaoResponsavel> AuxInstituicaoResponsavel { get; set; } = new();
 
 
-        /// <summary>
-        /// Uma feira possui dois tipos de Responsável
-        /// Um responsável que criou a feira na planilha
-        /// e um responsável para contato
-        /// Essas duas propriedades guardam isso
-        /// Relação (1 responsavel: N feiras)
-        /// </summary>
+        
+        // Uma feira possui dois tipos de Responsável
+        // Um responsável que criou a feira na planilha
+        // e um responsável para contato
+        // Essas duas propriedades guardam isso
+        // Relação (1 responsavel: N feiras)
         [InverseProperty("Responsavel")]
         public List<Feira> Feiras { get; set; } = new();
         
@@ -48,10 +48,8 @@ namespace ConversorPlanilhaBD.Model
         public List<Feira> FeirasContato { get; set; } = new();
 
 
-        /// <summary>
-        /// Guarda uma lista de projetos
-        /// Relação (1 responsavel: N projetos)
-        /// </summary>
+        // Guarda uma lista de projetos
+        // Relação (1 responsavel: N projetos)
         public List<Projeto> Projetos { get; set; } = new();
 
 

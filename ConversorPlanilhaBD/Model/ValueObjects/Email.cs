@@ -6,6 +6,9 @@ using System.Text;
 
 namespace ConversorPlanilhaBD.Model.ValueObjects
 {
+    /// <summary>
+    /// Guarda o endereço de email de uma pessoa ou instituição.
+    /// </summary>
     public class Email
     {
         //Guarda o id e auto-incrementa ao passar para o BD

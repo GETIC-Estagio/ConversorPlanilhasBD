@@ -6,6 +6,9 @@ using System.Text;
 
 namespace ConversorPlanilhaBD.Model.ValueObjects
 {
+    /// <summary>
+    /// Guarda os dados de telefone de uma pessoa ou instituição
+    /// </summary>
     public class Telefone
     {
         //Guarda o id e auto-incrementa ao passar para o BD

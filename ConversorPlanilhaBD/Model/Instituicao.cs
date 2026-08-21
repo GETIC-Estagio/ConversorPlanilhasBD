@@ -8,6 +8,9 @@ using System.Text;
 
 namespace ConversorPlanilhaBD.Model
 {
+    /// <summary>
+    /// Guarda os dados de uma instituição
+    /// </summary>
     public class Instituicao
     {
         //Guarda o id e auto-incrementa ao passar para o BD
@@ -15,22 +18,17 @@ namespace ConversorPlanilhaBD.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        //Guarda o nome da instituicao
         public string? Nome { get; set; }
 
-        //Guarda o cnpj da instituicao
         public string? CNPJ { get; set; }
 
-        //guarda o país
+        //País
         public string? Pais { get; set; }
         
-        //Guarda o estado
         public string? Estado { get; set; }
 
-        //Guarda o municipio
         public string? Municipio { get; set; }
 
-        //Guarda o endereco
         public string? Endereco { get; set; }
 
         //rede Pública ou Rede Privada etc
@@ -45,9 +43,9 @@ namespace ConversorPlanilhaBD.Model
         //Índice de Desenvolvimento Humano Municipal (IDHM)
         public double? IDHM { get; set; }
 
-        // Se a instituicao ja foi participante do ciencia jovem
-        //e detalhes relacionados
-        public string? Participante { get; set; }
+        // Se a instituicao ja foi participante do ciencia jovem e
+        // se sim, em que anos e quantos projetos foram apresentados
+        public string? ParticipacaoCienciaJovem { get; set; }
 
         //Integral, regular etc
         public string? OfertaEnsino { get; set; }
@@ -62,35 +60,27 @@ namespace ConversorPlanilhaBD.Model
         //Se a instituição recebeu algum apoio financeiro para realizar a feira
         public string? ApoioFinanceiro { get; set; }
 
-        //Se a instituição ja participou do Ciencia Jovem e 
-        //se sim, em que anos e quantos projetos foram apresentados
-        public string? ParticipacaoCienciaJovem { get; set; }
-
-        /// <summary>
-        /// Guarda uma lista de AuxInstituicaoResponsavel
-        /// Por responsavel e instituicao ser uma relacao N:M
-        /// Foi criado essa classe auxiliar
-        /// </summary>
+ 
+        // Guarda uma lista de AuxInstituicaoResponsavel
+        // Por responsavel e instituicao ser uma relacao N:M
+        // Foi criado essa classe auxiliar
         public List<AuxInstituicaoResponsavel> AuxInstituicaoResponsavel { get;   set; } = new();
 
-
-        /// <summary>
-        /// Uma feira possui dois tipos de instituicao
-        /// Uma instituicao do responsavel que criou a feira na planilha
-        /// e uma instituicao onde vai ser realizada
-        /// Essas duas propriedades guardam isso
-        /// Relação (1 instituicao: N feiras)
-        /// </summary>
+        // Uma feira possui dois tipos de instituicao
+        // Uma instituicao do responsavel que criou a feira na planilha
+        // e uma instituicao onde vai ser realizada
+        // Essas duas propriedades guardam isso
+        // Relação (1 instituicao: N feiras)
         [InverseProperty("Instituicao")]
         public List<Feira> Feiras { get; set; } = new();
 
         [InverseProperty("InstituicaoOrganizadora")]
         public List<Feira> FeirasOrganizadas { get; set; } = new();
 
-        //Guarda uma lista de Telefones e verifica se são somente numeros
+        //Guarda uma lista de Telefones
         public List<Telefone> Telefone { get; set; } = new();
 
-        //Guarda uma lista de Emails e verifica se possui @
+        //Guarda uma lista de Emails
         public List<Email> Email { get; set; } = new();
 
         //Cria um construtor vazio, para o EF CORE funcionar
@@ -103,8 +93,8 @@ namespace ConversorPlanilhaBD.Model
 
         public Instituicao(string? nome, string? cnpj, string? pais, string? estado,
             string? municipio, string? endereco, string? tipoRede, string? gre, double? ideb, double? idhm, 
-            string? participante, string? ofertaEnsino, string? adere,
-            string? tipologiaMunicipio, string? apoioFinanceiro, string? participacaoCJ) : this(nome)
+            string? participacaoCJ, string? ofertaEnsino, string? adere,
+            string? tipologiaMunicipio, string? apoioFinanceiro) : this(nome)
         {
             CNPJ = cnpj;
             Pais = pais;
@@ -115,12 +105,11 @@ namespace ConversorPlanilhaBD.Model
             GRE = gre;
             IDEB = ideb;
             IDHM = idhm;
-            Participante = participante;
+            ParticipacaoCienciaJovem = participacaoCJ;
             OfertaEnsino = ofertaEnsino;
             Adere = adere;
             TipologiaMunicipio = tipologiaMunicipio;
             ApoioFinanceiro = apoioFinanceiro;
-            ParticipacaoCienciaJovem = participacaoCJ;
         }
     }
 }

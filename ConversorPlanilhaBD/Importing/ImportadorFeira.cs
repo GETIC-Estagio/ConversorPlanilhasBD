@@ -10,6 +10,9 @@ using System.Text;
 
 namespace ConversorPlanilhaBD.Importing
 {
+    /// <summary>
+    /// Essa classe é responsável por importar os dados de uma feira a partir de uma planilha Excel para o banco de dados.
+    /// </summary>
     public class ImportadorFeira
     {
         private readonly CienciaJovemDb _db;
@@ -44,6 +47,12 @@ namespace ConversorPlanilhaBD.Importing
             var linhas = _planilha.RowsUsed().Skip(1).ToList();
             int total = linhas.Count;
             int processadas = 0;
+
+            foreach (var row in linhas)
+            {
+                int numeroLinha = row.RowNumber();
+                bool erroNaLinha = false;
+            }
         }
     }
 }

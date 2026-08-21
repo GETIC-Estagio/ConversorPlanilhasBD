@@ -8,6 +8,9 @@ using System.Text;
 
 namespace ConversorPlanilhaBD.Model
 {
+    /// <summary>
+    /// Guarda uma feira, que é um evento onde projetos são apresentados e avaliados.
+    /// </summary>
     public class Feira
     {
         //Guarda o id e auto-incrementa ao passar para o BD
@@ -15,23 +18,20 @@ namespace ConversorPlanilhaBD.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        //Guarda oo nome da feira
         public string? Nome { get; set; }
 
         //Municipal, estadual, escolar etc
         public string? Alcance { get; set; }
 
-        //Guarda o endereco da feira
         public string? Endereco { get; set; }
 
-        //Guarda o estado da feira,
-        //o construtor so valida o estado se for BR
+        //Guarda o Estado (Ex: PE, SP) da feira
         public string? Estado { get; set; }
 
         //Ex: anual 
         public string? PeriodoRealizacao { get; set; }
 
-        //Guarda vai ser realizado
+        //Guarda quando vai ser realizado
         //ex: 21-26 outubro
         public string? DataRealizacao { get; set; }
 
@@ -41,45 +41,42 @@ namespace ConversorPlanilhaBD.Model
         ////Guarda o numero de projetos a ser apresentado
         public int? NumProjetos { get; set; }
 
-        //Ex:Ciencias exatas
+        //Ex:Ciencias exatas, biologicas, humanas, etc
         public string? AreasConhecimento { get; set; }
 
-        //Ex:EnsinoMedio
+        //Ex:EnsinoMedio, Ensino Fundamental, Ensino Superior, etc
         public string? NivelEnsino { get; set; }
 
         //Guarda o numero de escolas participantes
         public int? NumEscolas { get; set; }
 
-        //Se feira é afiliada a alguma feira
+        //Se feira é afiliada a alguma outra feira
         public string? Afiliada { get; set; }
 
-        //Guarda o processo de selecao
+        //Guarda o processo de selecao dos projetos
         public string? ProcessoSelecao { get; set; }
 
-        //Guarda o periodo de elaboracao da feira
+        //Guarda o periodo de elaboracao dos projetos feira
         public string? PeriodoElaboracao { get; set; }
 
         //Se os projetos são avaliados durante a feira
+        //E se sim, como são avaliados
         public string? ProjetosAvaliados { get; set; }
 
         //Data e Hora que a feira foi registrada
         public DateTime? DataHora { get; set; }
 
-        /// <summary>
-        /// Guarda uma lista de projetos
-        /// Relação (1 feira: N projetos)
-        /// Projetos podem ou não estar associados a uma feira
-        /// </summary>
+        // Guarda uma lista de projetos
+        // Relação (1 feira: N projetos)
+        // Projetos podem ou não estar associados a uma feira
         public List<Projeto> Projetos { get; set; } = new();
 
 
-        /// <summary>
-        /// Uma feira possui dois tipos de instituicao
-        /// Uma instituicao do responsavel que criou a feira na planilha
-        /// e uma instituicao onde vai ser realizada
-        /// Essas duas propriedades guardam isso
-        /// Relação (1 instituicao: N feiras)
-        /// </summary>
+        // Uma feira possui dois tipos de instituicao
+        // Uma instituicao do responsavel que criou a feira na planilha
+        // e uma instituicao onde vai ser realizada
+        // Essas duas propriedades guardam isso
+        // Relação (1 instituicao: N feiras)
         public int? InstituicaoId { get; set; }
         [ForeignKey("InstituicaoId")]
         public Instituicao? Instituicao { get; set; }
@@ -87,13 +84,11 @@ namespace ConversorPlanilhaBD.Model
         [ForeignKey("InstituicaoOrganizadoraId")]
         public Instituicao? InstituicaoOrganizadora { get; set; }
 
-        /// <summary>
-        /// Uma feira possui dois tipos de Responsável
-        /// Um responsável que criou a feira na planilha
-        /// e um responsável para contato
-        /// Essas duas propriedades guardam isso
-        /// Relação (1 responsavel: N feiras)
-        /// </summary>
+        // Uma feira possui dois tipos de Responsável
+        // Um responsável que criou a feira na planilha
+        // e um responsável para contato
+        // Essas duas propriedades guardam isso
+        // Relação (1 responsavel: N feiras)
         public int? ResponsavelId { get; set; }
         [ForeignKey("ResponsavelId")]
         public Responsavel? Responsavel { get; set; }

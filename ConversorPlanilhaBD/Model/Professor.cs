@@ -4,6 +4,9 @@ using System.Text;
 
 namespace ConversorPlanilhaBD.Model
 {
+    /// <summary>
+    /// Guarda os dados de um professor, que é uma pessoa responsavel por um projeto
+    /// </summary>
     public class Professor : Pessoa
     {
         //Guarda o número da matricula do professor

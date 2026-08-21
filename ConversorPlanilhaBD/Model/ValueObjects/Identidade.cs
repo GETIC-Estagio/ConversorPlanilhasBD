@@ -6,20 +6,20 @@ using System.Text;
 
 namespace ConversorPlanilhaBD.Model.ValueObjects
 {
+    /// <summary>
+    /// Guarda os dados de identidade de uma pessoa, como CPF, RG e órgão expedidor.
+    /// </summary>
     public class Identidade
     {
         //Guarda o id e auto-incrementa ao passar para o BD
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-
-        //Guarda o numero da identidade
         public string? CPF { get; set; }
 
-        //Guarda o orgao que expediu
+        //Guarda o orgao que expediu o RG
         public string? OrgaoExpedidor { get; set; }
 
-        //Guarda o RG
         public string? RG { get; set; }
 
 
@@ -31,7 +31,7 @@ namespace ConversorPlanilhaBD.Model.ValueObjects
         //Construtor default para o EF CORE pegar
         protected Identidade() { }
 
-        //Esse construtor é para o CPF
+        //Esse construtor é somente para o CPF
         public Identidade(string? cpf)
         {
             CPF = cpf;

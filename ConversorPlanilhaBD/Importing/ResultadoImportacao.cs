@@ -4,7 +4,6 @@ using System.Text;
 
 namespace ConversorPlanilhaBD.Importacao
 {
-    //Serve para gerar o relatório final
     public class ResultadoImportacao
     {
         public int Sucessos { get; set; }
