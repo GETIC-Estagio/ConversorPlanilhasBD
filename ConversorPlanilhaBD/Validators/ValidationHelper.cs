@@ -7,7 +7,7 @@ using System.Globalization;
 using System.Text;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace ConversorPlanilhaBD.Model
+namespace ConversorPlanilhaBD.Validators
 {
     /// <summary>
     /// Serve para validar dados de entrada, como nomes, datas, emails, telefones, identidades, CNPJs, países e estados brasileiros.

@@ -11,6 +11,7 @@ namespace ConversorPlanilhaBD.Data
 
         // DbSets para todas as Entidades do Sistema
         public DbSet<Pessoa> Pessoas { get; set; } = null!;
+        public DbSet<Aluno> Alunos { get; set; } = null!;
         public DbSet<Responsavel> Responsaveis { get; set; } = null!;
         public DbSet<Professor> Professores { get; set; } = null!;
         public DbSet<Instituicao> Instituicoes { get; set; } = null!;
@@ -32,6 +33,7 @@ namespace ConversorPlanilhaBD.Data
             modelBuilder.Entity<Pessoa>().ToTable("Pessoas");
             modelBuilder.Entity<Responsavel>().ToTable("Responsaveis");
             modelBuilder.Entity<Professor>().ToTable("Professores");
+            modelBuilder.Entity<Aluno>().ToTable("Alunos");
 
 
             // ========================================================

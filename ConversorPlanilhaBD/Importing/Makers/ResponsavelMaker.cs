@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ConversorPlanilhaBD.Model.ValueObjects;
+using ConversorPlanilhaBD.Validators;
 
 namespace ConversorPlanilhaBD.Importing.Makers
 {

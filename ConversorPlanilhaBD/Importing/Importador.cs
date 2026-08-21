@@ -73,14 +73,21 @@ namespace ConversorPlanilhaBD.Importacao
 
             await using var db = new CienciaJovemDb(optionsBuilder.Options);
 
-            //Processa Feiras
-            var importadorFeira = new ImportadorFeira(db, _feiras, resultado);
-            importadorFeira.Progresso += (p, t) => Progresso?.Invoke(p, t);
-            importadorFeira.ContadoresAtualizados += (s, e) => ContadoresAtualizados?.Invoke(s, e);
-            importadorFeira.Erro += msg => Erro?.Invoke(msg);
+            ////Processa Feiras
+            //var importadorFeira = new ImportadorFeira(db, _feiras, resultado);
+            //importadorFeira.Progresso += (p, t) => Progresso?.Invoke(p, t);
+            //importadorFeira.ContadoresAtualizados += (s, e) => ContadoresAtualizados?.Invoke(s, e);
+            //importadorFeira.Erro += msg => Erro?.Invoke(msg);
 
-            await importadorFeira.ImportarAsync();
+            //await importadorFeira.ImportarAsync();
 
+            //Processa Projetos
+            var importadorProjetos = new ImportadorPreProjetos(db, _preProjetos, resultado);
+            importadorProjetos.Progresso += (p, t) => Progresso?.Invoke(p, t);
+            importadorProjetos.ContadoresAtualizados += (s, e) => ContadoresAtualizados?.Invoke(s, e);
+            importadorProjetos.Erro += msg => Erro?.Invoke(msg);
+
+            await importadorProjetos.ImportarAsync();
 
             return resultado;
         }

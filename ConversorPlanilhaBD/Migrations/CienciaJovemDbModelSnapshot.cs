@@ -201,15 +201,10 @@ namespace ConversorPlanilhaBD.Migrations
                     b.Property<string>("Nome")
                         .HasColumnType("text");
 
-                    b.Property<int?>("ProjetoId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Raca")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProjetoId");
 
                     b.ToTable("Pessoas", (string)null);
 
@@ -357,6 +352,18 @@ namespace ConversorPlanilhaBD.Migrations
                     b.ToTable("Telefones");
                 });
 
+            modelBuilder.Entity("ConversorPlanilhaBD.Model.Aluno", b =>
+                {
+                    b.HasBaseType("ConversorPlanilhaBD.Model.Pessoa");
+
+                    b.Property<int?>("ProjetoId")
+                        .HasColumnType("integer");
+
+                    b.HasIndex("ProjetoId");
+
+                    b.ToTable("Alunos", (string)null);
+                });
+
             modelBuilder.Entity("ConversorPlanilhaBD.Model.Professor", b =>
                 {
                     b.HasBaseType("ConversorPlanilhaBD.Model.Pessoa");
@@ -440,16 +447,6 @@ namespace ConversorPlanilhaBD.Migrations
                     b.Navigation("ResponsavelContato");
                 });
 
-            modelBuilder.Entity("ConversorPlanilhaBD.Model.Pessoa", b =>
-                {
-                    b.HasOne("ConversorPlanilhaBD.Model.Projeto", "Projeto")
-                        .WithMany("Alunos")
-                        .HasForeignKey("ProjetoId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Projeto");
-                });
-
             modelBuilder.Entity("ConversorPlanilhaBD.Model.Projeto", b =>
                 {
                     b.HasOne("ConversorPlanilhaBD.Model.Feira", "Feira")
@@ -515,6 +512,22 @@ namespace ConversorPlanilhaBD.Migrations
                     b.Navigation("Instituicao");
 
                     b.Navigation("Pessoa");
+                });
+
+            modelBuilder.Entity("ConversorPlanilhaBD.Model.Aluno", b =>
+                {
+                    b.HasOne("ConversorPlanilhaBD.Model.Pessoa", null)
+                        .WithOne()
+                        .HasForeignKey("ConversorPlanilhaBD.Model.Aluno", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ConversorPlanilhaBD.Model.Projeto", "Projeto")
+                        .WithMany("Alunos")
+                        .HasForeignKey("ProjetoId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Projeto");
                 });
 
             modelBuilder.Entity("ConversorPlanilhaBD.Model.Professor", b =>

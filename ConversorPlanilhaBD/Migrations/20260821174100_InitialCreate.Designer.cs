@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ConversorPlanilhaBD.Migrations
 {
     [DbContext(typeof(CienciaJovemDb))]
-    [Migration("20260819191825_InitialCreate")]
+    [Migration("20260821174100_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -113,9 +113,6 @@ namespace ConversorPlanilhaBD.Migrations
                     b.Property<string>("ProjetosAvaliados")
                         .HasColumnType("text");
 
-                    b.Property<int?>("QuantosProjetos")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("ResponsavelContatoId")
                         .HasColumnType("integer");
 
@@ -179,7 +176,7 @@ namespace ConversorPlanilhaBD.Migrations
                     b.Property<string>("Pais")
                         .HasColumnType("text");
 
-                    b.Property<string>("Participante")
+                    b.Property<string>("ParticipacaoCienciaJovem")
                         .HasColumnType("text");
 
                     b.Property<string>("TipoRede")
@@ -201,21 +198,16 @@ namespace ConversorPlanilhaBD.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("IdGenero")
+                    b.Property<string>("Genero")
                         .HasColumnType("text");
 
                     b.Property<string>("Nome")
                         .HasColumnType("text");
 
-                    b.Property<int?>("ProjetoId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Raca")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProjetoId");
 
                     b.ToTable("Pessoas", (string)null);
 
@@ -317,7 +309,7 @@ namespace ConversorPlanilhaBD.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Numero")
+                    b.Property<string>("CPF")
                         .HasColumnType("text");
 
                     b.Property<string>("OrgaoExpedidor")
@@ -326,9 +318,13 @@ namespace ConversorPlanilhaBD.Migrations
                     b.Property<int?>("PessoaId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("RG")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("PessoaId");
+                    b.HasIndex("PessoaId")
+                        .IsUnique();
 
                     b.ToTable("Identidades");
                 });
@@ -357,6 +353,18 @@ namespace ConversorPlanilhaBD.Migrations
                     b.HasIndex("PessoaId");
 
                     b.ToTable("Telefones");
+                });
+
+            modelBuilder.Entity("ConversorPlanilhaBD.Model.Aluno", b =>
+                {
+                    b.HasBaseType("ConversorPlanilhaBD.Model.Pessoa");
+
+                    b.Property<int?>("ProjetoId")
+                        .HasColumnType("integer");
+
+                    b.HasIndex("ProjetoId");
+
+                    b.ToTable("Alunos", (string)null);
                 });
 
             modelBuilder.Entity("ConversorPlanilhaBD.Model.Professor", b =>
@@ -442,16 +450,6 @@ namespace ConversorPlanilhaBD.Migrations
                     b.Navigation("ResponsavelContato");
                 });
 
-            modelBuilder.Entity("ConversorPlanilhaBD.Model.Pessoa", b =>
-                {
-                    b.HasOne("ConversorPlanilhaBD.Model.Projeto", "Projeto")
-                        .WithMany("Alunos")
-                        .HasForeignKey("ProjetoId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Projeto");
-                });
-
             modelBuilder.Entity("ConversorPlanilhaBD.Model.Projeto", b =>
                 {
                     b.HasOne("ConversorPlanilhaBD.Model.Feira", "Feira")
@@ -495,8 +493,8 @@ namespace ConversorPlanilhaBD.Migrations
             modelBuilder.Entity("ConversorPlanilhaBD.Model.ValueObjects.Identidade", b =>
                 {
                     b.HasOne("ConversorPlanilhaBD.Model.Pessoa", "Pessoa")
-                        .WithMany("Identidade")
-                        .HasForeignKey("PessoaId")
+                        .WithOne("Identidade")
+                        .HasForeignKey("ConversorPlanilhaBD.Model.ValueObjects.Identidade", "PessoaId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Pessoa");
@@ -517,6 +515,22 @@ namespace ConversorPlanilhaBD.Migrations
                     b.Navigation("Instituicao");
 
                     b.Navigation("Pessoa");
+                });
+
+            modelBuilder.Entity("ConversorPlanilhaBD.Model.Aluno", b =>
+                {
+                    b.HasOne("ConversorPlanilhaBD.Model.Pessoa", null)
+                        .WithOne()
+                        .HasForeignKey("ConversorPlanilhaBD.Model.Aluno", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ConversorPlanilhaBD.Model.Projeto", "Projeto")
+                        .WithMany("Alunos")
+                        .HasForeignKey("ProjetoId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Projeto");
                 });
 
             modelBuilder.Entity("ConversorPlanilhaBD.Model.Professor", b =>

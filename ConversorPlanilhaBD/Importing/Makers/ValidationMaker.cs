@@ -1,7 +1,7 @@
 ﻿using ClosedXML.Excel;
 using ConversorPlanilhaBD.Importacao;
-using ConversorPlanilhaBD.Model;
 using ConversorPlanilhaBD.Model.ValueObjects;
+using ConversorPlanilhaBD.Validators;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -218,6 +218,25 @@ namespace ConversorPlanilhaBD.Importing.Makers
             catch
             {
                 EnviarErro(row.RowNumber(), $"Numero inválido: {ExcelHelper.ObterValor(row, coluna)}");
+                return null;
+            }
+        }
+
+        protected string? ExtrairValidarRG(IXLRow row, int coluna, int coluna2)
+        {
+            try
+            {
+                string? rg = ExcelHelper.ObterValor(row, coluna);
+                string? orgao = ExcelHelper.ObterValor(row, coluna2);
+                if (string.IsNullOrWhiteSpace(rg) || string.IsNullOrWhiteSpace(orgao))
+                {
+                    throw new ArgumentException("A célula está vazia.");
+                }
+                return ValidationHelper.VerificarRG(rg, orgao);
+            }
+            catch
+            {
+                EnviarErro(row.RowNumber(), $"RG inválido: {ExcelHelper.ObterValor(row, coluna)}");
                 return null;
             }
         }

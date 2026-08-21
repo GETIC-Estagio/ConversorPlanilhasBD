@@ -22,7 +22,6 @@ namespace ConversorPlanilhaBD.Model.ValueObjects
 
         public string? RG { get; set; }
 
-
         //Guarda a chave estrangeira de pessoa
         public int? PessoaId { get; set; }
         [ForeignKey("PessoaId")]

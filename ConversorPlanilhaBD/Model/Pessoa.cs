@@ -11,9 +11,9 @@ using Microsoft.EntityFrameworkCore;
 namespace ConversorPlanilhaBD.Model
 {
     /// <summary>
-    /// Guarda os dados de uma pessoa, como nome, identidade, emails, telefones, gênero e raça.
+    /// Classe abstrata que Alunos, Responsaveis e Professores herdam.
     /// </summary>
-    public class Pessoa
+    public abstract class Pessoa
     {
 
         //Guarda o id da pessoa e auto-incrementa ao passar para o BD
@@ -37,15 +37,6 @@ namespace ConversorPlanilhaBD.Model
 
         //Raça
         public string? Raca { get; set; }
-
-
-        //Somente quando for aluno
-        //Guarda a chave estrangeira de Projeto
-        //Relação (1 Projeto: N alunos)
-        public int? ProjetoId { get; set; }
-        [ForeignKey("ProjetoId")]
-        public Projeto? Projeto { get; set; }
-
 
         //Cria um construtor vazio, para o EF CORE funcionar
         protected Pessoa() { }

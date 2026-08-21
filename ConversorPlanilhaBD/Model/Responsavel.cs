@@ -35,7 +35,6 @@ namespace ConversorPlanilhaBD.Model
         public List<AuxInstituicaoResponsavel> AuxInstituicaoResponsavel { get; set; } = new();
 
 
-        
         // Uma feira possui dois tipos de Responsável
         // Um responsável que criou a feira na planilha
         // e um responsável para contato

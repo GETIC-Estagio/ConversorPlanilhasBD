@@ -49,10 +49,10 @@ namespace ConversorPlanilhaBD.Model
         public string? Resumo { get; set; }
 
         /// <summary>
-        /// Guarda uma lista de alunos que são da classe pessoa
+        /// Guarda uma lista de alunos
         /// Relação (1 Projeto: N alunos)
         /// </summary>
-        public List<Pessoa> Alunos { get; set; } = new();
+        public List<Aluno> Alunos { get; set; } = new();
 
         /// <summary>
         /// Guarda a chave estrangeira de responsáveis
