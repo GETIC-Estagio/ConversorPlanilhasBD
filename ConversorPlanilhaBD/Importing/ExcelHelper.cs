@@ -56,7 +56,6 @@ namespace ConversorPlanilhaBD.Importing
             public const int SobrenomeResponsavel = 4;
             public const int DataNascimentoResponsavel = 5;
             public const int CPF_Responsavel = 6;
-            public const int OutroEmailResponsavel = 7;
             public const int TelefoneResponsavel = 8;
             public const int IdentidadeGeneroResponsavel = 9;
             public const int RacaResponsavel = 10;

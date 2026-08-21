@@ -2,21 +2,21 @@
 using ConversorPlanilhaBD.Data;
 using ConversorPlanilhaBD.Importacao;
 using ConversorPlanilhaBD.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ConversorPlanilhaBD.Model.ValueObjects;
 
 namespace ConversorPlanilhaBD.Importing.Makers
 {
-    public class ResponsavelMaker
+    public class ResponsavelMaker : ValidationMaker
     {
         private readonly CienciaJovemDb _db;
-        private readonly ResultadoImportacao _resultado;
 
-        public ResponsavelMaker(CienciaJovemDb db, ResultadoImportacao resultado)
+        public ResponsavelMaker(CienciaJovemDb db, ResultadoImportacao resultado) : base(resultado)
         {
             _db = db;
-            _resultado = resultado;
         }
 
         public async Task<Responsavel?> ObterOuCriarAsync(IXLRow row, int numeroLinha, bool isContato)
@@ -27,25 +27,31 @@ namespace ConversorPlanilhaBD.Importing.Makers
 
             string? cpf = ExcelHelper.ObterValor(row, ExcelHelper.ColunasFeiras.CPF_Responsavel);
 
-            try { 
-                ValidationHelper.VerificarCPF(cpf); 
-            }
-            catch
+            if (!string.IsNullOrWhiteSpace(cpf))
             {
-                EnviarErro(numeroLinha, $"CPF do responsável inválido: {cpf}");
-                cpf = null;
-            }
-
-
-            if (cpf != null)
-            {
-                var responsavelExistente = await _db.Responsaveis.FirstOrDefault(
-                    r => r.Identidade != null && r.Identidade.CPF == cpf);
-
-                if (responsavelExistente != null)
+                try
                 {
-                    return responsavelExistente;
+                    cpf = ValidationHelper.VerificarCPF(cpf);
+
+                    var responsavelExistente = await _db.Responsaveis
+                   .Include(r => r.Identidade)
+                   .FirstOrDefaultAsync(r => r.Identidade != null && r.Identidade.CPF == cpf);
+
+                    if (responsavelExistente != null)
+                    {
+                        return responsavelExistente;
+                    }
+
                 }
+                catch
+                {
+                    EnviarErro(numeroLinha, $"CPF do responsável inválido: {cpf}");
+                    cpf = null;
+                }
+            }
+            else
+            {
+                cpf = null;
             }
 
             // ============================================================
@@ -80,7 +86,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
 
             //Insere o CPF dele
             if (cpf != null)
-                novoResponsavel.Identidade.CPF = cpf;
+                novoResponsavel.Identidade = new Identidade(cpf);
 
 
             // ============================================================
@@ -97,40 +103,27 @@ namespace ConversorPlanilhaBD.Importing.Makers
             await _db.SaveChangesAsync();
 
             return novoResponsavel;
-
-
         }
- 
 
         private void AdicionarContatos(IXLRow row, Responsavel responsavel, bool isContato)
         {
-            // ============================================================
-            //  OBTENÇÃO EMAILS
-            // ============================================================
-            string? email1 = ExcelHelper.ObterValor(row, ExcelHelper.ColunasFeiras.EmailResponsavel);
-            string? email2 = ExcelHelper.ObterValor(row, ExcelHelper.ColunasFeiras.OutroEmailResponsavel);
-            if (!string.IsNullOrWhiteSpace(email1))
-            {
-                responsavel.Email.Add(new Email(email1));
-            }
-            if (!string.IsNullOrWhiteSpace(email2))
-            {
-                responsavel.Email.Add(new Email(email2));
-            }
-            // ============================================================
-            //  OBTENÇÃO TELEFONES
-            // ============================================================
-            string? telefone1 = ExcelHelper.ObterValor(row, ExcelHelper.ColunasFeiras.Telefone1Responsavel);
-            string? telefone2 = ExcelHelper.ObterValor(row, ExcelHelper.ColunasFeiras.Telefone2Responsavel);
-            if (!string.IsNullOrWhiteSpace(telefone1))
-            {
-                responsavel.Telefone.Add(new Telefone(telefone1));
-            }
-            if (!string.IsNullOrWhiteSpace(telefone2))
-            {
-                responsavel.Telefone.Add(new Telefone(telefone2));
-            }
-        }
+            int colEmail = isContato ? ExcelHelper.ColunasFeiras.EmailContatoFeira : ExcelHelper.ColunasFeiras.EmailResponsavel;
+            int colTelefone = isContato ? ExcelHelper.ColunasFeiras.TelefoneContatoFeira : ExcelHelper.ColunasFeiras.TelefoneResponsavel;
 
+            string? email = ExtrairValidarEmail(row, colEmail);
+            string? telefone = ExtrairValidarTelefone(row, colTelefone);
+
+
+            if (email != null)
+            {
+                responsavel.Email.Add(new Email(email));
+            }
+
+            if (telefone != null)
+            {
+                responsavel.Telefone.Add(new Telefone(telefone));
+            }
+
+        }
     }
 }
