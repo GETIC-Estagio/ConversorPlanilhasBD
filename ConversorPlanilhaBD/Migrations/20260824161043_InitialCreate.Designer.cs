@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ConversorPlanilhaBD.Migrations
 {
     [DbContext(typeof(CienciaJovemDb))]
-    [Migration("20260821194100_InitialCreate")]
+    [Migration("20260824161043_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

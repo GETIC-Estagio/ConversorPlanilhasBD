@@ -1,5 +1,6 @@
-﻿using ConversorPlanilhaBD.Model;
-using ConversorPlanilhaBD.Model.AuxModels;
+﻿using ConversorPlanilhaBD.Model.AuxModels;
+using ConversorPlanilhaBD.Model.RegisterModels;
+using ConversorPlanilhaBD.Model.RegisterModels.PessoaModels;
 using ConversorPlanilhaBD.Model.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
