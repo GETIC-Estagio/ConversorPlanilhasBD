@@ -8,13 +8,8 @@ using System.Text;
 
 namespace ConversorPlanilhaBD.Model.AuxModels
 {
-    public class AuxInstituicaoResponsavel
+    public class AuxInstituicaoResponsavel : ModelBase
     {
-        //Guarda o id e auto incrementa quando for para o banco
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
         //Guarda a chave estrangeira de pessoa
         public int? ResponsavelId { get; set; }
         [ForeignKey("ResponsavelId")]
@@ -28,7 +23,6 @@ namespace ConversorPlanilhaBD.Model.AuxModels
         //Guarda qual a funcao do responsavel na instituicao
         public string? FuncaoInstituicao { get; set; }
 
-        // Construtor obrigatório do EF Core
         public AuxInstituicaoResponsavel() { }
 
         public AuxInstituicaoResponsavel(Responsavel? responsavel, Instituicao? instituicao, 
