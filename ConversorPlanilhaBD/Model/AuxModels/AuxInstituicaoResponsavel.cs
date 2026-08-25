@@ -1,4 +1,5 @@
-﻿using ConversorPlanilhaBD.Model;
+﻿using ConversorPlanilhaBD.Model.RegisterModels;
+using ConversorPlanilhaBD.Model.RegisterModels.PessoaModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

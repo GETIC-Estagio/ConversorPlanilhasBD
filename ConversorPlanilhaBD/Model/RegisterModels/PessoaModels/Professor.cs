@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ConversorPlanilhaBD.Model
+namespace ConversorPlanilhaBD.Model.RegisterModels.PessoaModels
 {
     /// <summary>
     /// Guarda os dados de um professor, que é uma pessoa responsavel por um projeto
@@ -10,18 +10,16 @@ namespace ConversorPlanilhaBD.Model
     public class Professor : Pessoa
     {
         //Guarda o número da matricula do professor
-        public string? NumMatricula { get; set; }
+        public string NumMatricula { get; set; } = null!;
 
         //Guarda uma lista de Projetos (relação 1 Professor:N projetos)
         public List<Projeto> Projetos { get; set; } = new();
 
         protected Professor() { }
         
-        //Chama o construtor pai Pessoa
-        public Professor(string? nome, string? idGenero, string? raca, string? numMatricula)
-            : base(nome, idGenero, raca)
+        public Professor(string sNome, string sNumMatricula) : base(sNome)
         {
-            NumMatricula = numMatricula;
+            NumMatricula = sNumMatricula;
         }
     }
 }

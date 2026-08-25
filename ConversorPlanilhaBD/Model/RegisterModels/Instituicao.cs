@@ -1,4 +1,5 @@
-﻿using ConversorPlanilhaBD.Model.AuxModels;
+﻿using ConversorPlanilhaBD.Enums;
+using ConversorPlanilhaBD.Model.AuxModels;
 using ConversorPlanilhaBD.Model.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -6,33 +7,30 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace ConversorPlanilhaBD.Model
+namespace ConversorPlanilhaBD.Model.RegisterModels
 {
     /// <summary>
     /// Guarda os dados de uma instituição
     /// </summary>
-    public class Instituicao
+    public class Instituicao : ModelCadastro
     {
-        //Guarda o id e auto-incrementa ao passar para o BD
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public string Nome { get; set; } = null!;
 
-        public string? Nome { get; set; }
+        public string CNPJ { get; set; } = null!;
 
-        public string? CNPJ { get; set; }
+        public string Pais { get; set; } = null!;
 
-        //País
-        public string? Pais { get; set; }
-        
-        public string? Estado { get; set; }
+        //Caso seja Nacional
+        public EnumEstadosBrasileiros EstadoBr { get; set; }
+
+        //Caso seja Internacional
+        public string? EstadoInternacional { get; set; }
 
         public string? Municipio { get; set; }
 
-        public string? Endereco { get; set; }
+        public string Endereco { get; set; } = null!;
 
-        //rede Pública ou Rede Privada etc
-        public string? TipoRede { get; set; }
+        public EnumTipoRede TipoRede { get; set; }
 
         //GRE (Gerência Regional de Educação) - Estado de Pernambuco
         public string? GRE { get; set; }
@@ -47,18 +45,16 @@ namespace ConversorPlanilhaBD.Model
         // se sim, em que anos e quantos projetos foram apresentados
         public string? ParticipacaoCienciaJovem { get; set; }
 
-        //Integral, regular etc
-        public string? OfertaEnsino { get; set; }
+        public EnumOfertaEnsino OfertaEnsino { get; set; }
 
         //  A escola adere ao Programa Escola em Tempo Integral, iniciativa do Ministério da Educação(MEC)
         //  e coordenado pela Secretaria de Educação Básica(SEB)?
         public string? Adere { get; set; }
 
-        //Rural, urbano etc
-        public string? TipologiaMunicipio { get; set; }
+        public EnumTipologiaMunicipio TipologiaMunicipio { get; set; }
 
         //Se a instituição recebeu algum apoio financeiro para realizar a feira
-        public string? ApoioFinanceiro { get; set; }
+        public EnumApoioFinanceiro ApoioFinanceiro { get; set; }
 
  
         // Guarda uma lista de AuxInstituicaoResponsavel
@@ -78,38 +74,33 @@ namespace ConversorPlanilhaBD.Model
         public List<Feira> FeirasOrganizadas { get; set; } = new();
 
         //Guarda uma lista de Telefones
-        public List<Telefone> Telefone { get; set; } = new();
+        public List<Telefone> Telefones { get; set; } = new();
 
         //Guarda uma lista de Emails
-        public List<Email> Email { get; set; } = new();
+        public List<Email> Emails { get; set; } = new();
 
         //Cria um construtor vazio, para o EF CORE funcionar
         public Instituicao() { }
 
-        public Instituicao (string? nome)
+        public Instituicao (string sNome)
         {
-            Nome = nome;
+            Nome = sNome;
         }
 
-        public Instituicao(string? nome, string? cnpj, string? pais, string? estado,
-            string? municipio, string? endereco, string? tipoRede, string? gre, double? ideb, double? idhm, 
-            string? participacaoCJ, string? ofertaEnsino, string? adere,
-            string? tipologiaMunicipio, string? apoioFinanceiro) : this(nome)
+        public Instituicao(string sNome, string sCnpj, string sPais, string? sEstadoInt,
+            string? sMunicipio, string sEndereco, string? sGre, double? dIdeb, double? dIdhm, 
+            string? sParticipacaoCJ, string? sAdere) : this(sNome)
         {
-            CNPJ = cnpj;
-            Pais = pais;
-            Estado = estado;
-            Municipio = municipio;
-            Endereco = endereco;
-            TipoRede = tipoRede;
-            GRE = gre;
-            IDEB = ideb;
-            IDHM = idhm;
-            ParticipacaoCienciaJovem = participacaoCJ;
-            OfertaEnsino = ofertaEnsino;
-            Adere = adere;
-            TipologiaMunicipio = tipologiaMunicipio;
-            ApoioFinanceiro = apoioFinanceiro;
+            CNPJ = sCnpj;
+            Pais = sPais;
+            EstadoInternacional = sEstadoInt;
+            Municipio = sMunicipio;
+            Endereco = sEndereco;
+            GRE = sGre;
+            IDEB = dIdeb;
+            IDHM = dIdhm;
+            ParticipacaoCienciaJovem = sParticipacaoCJ;
+            Adere = sAdere;
         }
     }
 }

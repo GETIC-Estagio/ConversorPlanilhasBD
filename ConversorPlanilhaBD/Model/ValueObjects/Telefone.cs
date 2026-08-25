@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConversorPlanilhaBD.Model.RegisterModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,13 +10,8 @@ namespace ConversorPlanilhaBD.Model.ValueObjects
     /// <summary>
     /// Guarda os dados de telefone de uma pessoa ou instituição
     /// </summary>
-    public class Telefone
+    public class Telefone : ModelBase
     {
-        //Guarda o id e auto-incrementa ao passar para o BD
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
         //Guarda o numero de telefone
         public string? Numero { get; set; }
 
@@ -29,7 +25,6 @@ namespace ConversorPlanilhaBD.Model.ValueObjects
         [ForeignKey("InstituicaoId")]
         public Instituicao? Instituicao { get; set; }
 
-        //Construtor default para o EF CORE pegar
         protected Telefone() { }
 
         public Telefone(string? numero)

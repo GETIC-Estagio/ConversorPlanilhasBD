@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace ConversorPlanilhaBD.Model
+namespace ConversorPlanilhaBD.Model.RegisterModels.PessoaModels
 {
     /// <summary>
     /// Guarda uma classe de alunos, que são pessoas que fazem parte de um projeto
@@ -18,7 +18,6 @@ namespace ConversorPlanilhaBD.Model
 
         protected Aluno() { }
 
-        public Aluno(string? nome, string? idGenero, string? raca)
-            : base(nome, idGenero, raca) { }
+        public Aluno(string sNome) : base(sNome) { }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConversorPlanilhaBD.Model.RegisterModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,13 +10,8 @@ namespace ConversorPlanilhaBD.Model.ValueObjects
     /// <summary>
     /// Guarda o endereço de email de uma pessoa ou instituição.
     /// </summary>
-    public class Email
+    public class Email : ModelBase
     {
-        //Guarda o id e auto-incrementa ao passar para o BD
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
         //Guarda o endereco de email
         public string? Endereco { get; set; }
 
@@ -29,7 +25,6 @@ namespace ConversorPlanilhaBD.Model.ValueObjects
         [ForeignKey("InstituicaoId")]
         public Instituicao? Instituicao { get; set; }
 
-        //Construtor default para o EF CORE pegar
         protected Email() { }
 
         public Email(string? endereco)
