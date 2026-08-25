@@ -2,13 +2,14 @@
 using ConversorPlanilhaBD.Data;
 using ConversorPlanilhaBD.Importacao;
 using ConversorPlanilhaBD.Importing.Makers;
-using ConversorPlanilhaBD.Model;
 using ConversorPlanilhaBD.Model.AuxModels;
 using ConversorPlanilhaBD.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ConversorPlanilhaBD.Model.RegisterModels;
+using ConversorPlanilhaBD.Model.RegisterModels.PessoaModels;
 
 namespace ConversorPlanilhaBD.Importing
 {
@@ -73,17 +74,19 @@ namespace ConversorPlanilhaBD.Importing
                     // Cria a Feira
                     var feira = await _feiraMaker.ObterOuCriarAsync(row, numeroLinha, responsavelSubmissao, instSede, instOrganizadora, responsavelContato);
 
-                    // Se a feira foi criada, deu sucesso na linha
-                    if (feira != null) _resultado.RegistrarSucesso();
+                    _resultado.RegistrarSucesso();
                 }
                 catch (Exception ex)
                 {
                     _resultado.RegistrarErro(numeroLinha, $"Erro inesperado: {ex.Message}");
                     Erro?.Invoke($"Linha {numeroLinha}: {ex.Message}");
                 }
-                processadas++;
-                Progresso?.Invoke(processadas, total);
-                ContadoresAtualizados?.Invoke(_resultado.Sucessos, _resultado.Erros);
+                finally
+                {
+                    processadas++;
+                    Progresso?.Invoke(processadas, total);
+                    ContadoresAtualizados?.Invoke(_resultado.Sucessos, _resultado.Erros);
+                }
             }
         }
 

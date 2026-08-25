@@ -1,13 +1,14 @@
 ﻿using ClosedXML.Excel;
 using ConversorPlanilhaBD.Data;
 using ConversorPlanilhaBD.Importacao;
-using ConversorPlanilhaBD.Model;
 using ConversorPlanilhaBD.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using ConversorPlanilhaBD.Model.RegisterModels;
+using ConversorPlanilhaBD.Model.RegisterModels.PessoaModels;
 
 namespace ConversorPlanilhaBD.Importing.Makers
 {

@@ -45,7 +45,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
             catch
             {
-                EnviarErro(row.RowNumber(), $"Nome inválido: {ExcelHelper.ObterValor(row, coluna)}");
+                EnviarErro(row.RowNumber(), $"Nome inválido: {ExcelHelper.ObterValor(row, coluna)}. Coluna: {coluna}");
                 return null;
             }
         }
@@ -65,7 +65,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
             catch
             {
-                EnviarErro(row.RowNumber(), $"Data de nascimento inválida: {ExcelHelper.ObterValor(row, coluna)}");
+                EnviarErro(row.RowNumber(), $"Data de nascimento inválida: {ExcelHelper.ObterValor(row, coluna)}. Coluna: {coluna}");
                 return null;
             }
         }
@@ -84,7 +84,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
                 return DateTime.SpecifyKind(data, DateTimeKind.Utc);
             }
 
-            EnviarErro(row.RowNumber(), $"Data/hora inválida: {valor}");
+            EnviarErro(row.RowNumber(), $"Data/hora inválida: {valor}. Coluna: {coluna}");
             return null;
         }
 
@@ -104,7 +104,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
             catch
             {
-                EnviarErro(row.RowNumber(), $"Texto inválido na : {ExcelHelper.ObterValor(row, coluna)}");
+                EnviarErro(row.RowNumber(), $"Texto inválido na : {ExcelHelper.ObterValor(row, coluna)}. Coluna: {coluna}");
                 return null;
             }
         }
@@ -123,7 +123,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
             catch
             {
-                EnviarErro(row.RowNumber(), $"Email inválido: {ExcelHelper.ObterValor(row, coluna)}");
+                EnviarErro(row.RowNumber(), $"Email inválido: {ExcelHelper.ObterValor(row, coluna)}. Coluna: {coluna}");
                 return null;
             }
         }
@@ -141,7 +141,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
             catch
             {
-                EnviarErro(row.RowNumber(), $"Telefone inválido: {ExcelHelper.ObterValor(row, coluna)}");
+                EnviarErro(row.RowNumber(), $"Telefone inválido: {ExcelHelper.ObterValor(row, coluna)}. Coluna: {coluna}");
                 return null;
             }
         }
@@ -160,7 +160,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
             catch
             {
-                EnviarErro(row.RowNumber(), $"País inválido: {ExcelHelper.ObterValor(row, coluna)}");
+                EnviarErro(row.RowNumber(), $"País inválido: {ExcelHelper.ObterValor(row, coluna)}. Coluna: {coluna}");
                 return null;
             }
         }
@@ -179,7 +179,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
             catch
             {
-                EnviarErro(row.RowNumber(), $"Estado inválido: {ExcelHelper.ObterValor(row, coluna)}");
+                EnviarErro(row.RowNumber(), $"Estado inválido: {ExcelHelper.ObterValor(row, coluna)}. Coluna: {coluna}");
                 return null;
             }
         }
@@ -197,7 +197,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
             catch
             {
-                EnviarErro(row.RowNumber(), $"Numero inválido: {ExcelHelper.ObterValor(row, coluna)}");
+                EnviarErro(row.RowNumber(), $"Numero inválido: {ExcelHelper.ObterValor(row, coluna)}. Coluna: {coluna}");
                 return null;
             }
         }
@@ -215,7 +215,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
             catch
             {
-                EnviarErro(row.RowNumber(), $"Numero inválido: {ExcelHelper.ObterValor(row, coluna)}");
+                EnviarErro(row.RowNumber(), $"Numero inválido: {ExcelHelper.ObterValor(row, coluna)}. Coluna: {coluna}");
                 return null;
             }
         }
@@ -233,7 +233,7 @@ namespace ConversorPlanilhaBD.Importing.Makers
             }
             catch
             {
-                EnviarErro(row.RowNumber(), $"RG inválido: {ExcelHelper.ObterValor(row, coluna)}");
+                EnviarErro(row.RowNumber(), $"RG inválido: {ExcelHelper.ObterValor(row, coluna)}. Coluna: {coluna}");
                 return null;
             }
         }

@@ -2,13 +2,14 @@
 using ConversorPlanilhaBD.Data;
 using ConversorPlanilhaBD.Importacao;
 using ConversorPlanilhaBD.Importing.Makers;
-using ConversorPlanilhaBD.Model;
 using ConversorPlanilhaBD.Model.AuxModels;
 using ConversorPlanilhaBD.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ConversorPlanilhaBD.Model.RegisterModels;
+using ConversorPlanilhaBD.Model.RegisterModels.PessoaModels;
 
 namespace ConversorPlanilhaBD.Importing
 {
@@ -94,17 +95,19 @@ namespace ConversorPlanilhaBD.Importing
                     // 5. Cria Projeto
                     var projeto = await _projetoMaker.ObterOuCriarAsync(row, numeroLinha, responsavel, professor, alunos);
 
-                    if (projeto != null) _resultado.RegistrarSucesso();
+                    _resultado.RegistrarSucesso();
                 }
                 catch (Exception ex)
                 {
                     _resultado.RegistrarErro(numeroLinha, $"Erro inesperado: {ex.Message}");
                     Erro?.Invoke($"Linha {numeroLinha}: {ex.Message}");
                 }
-
-                processadas++;
-                Progresso?.Invoke(processadas, total);
-                ContadoresAtualizados?.Invoke(_resultado.Sucessos, _resultado.Erros);
+                finally
+                {
+                    processadas++;
+                    Progresso?.Invoke(processadas, total);
+                    ContadoresAtualizados?.Invoke(_resultado.Sucessos, _resultado.Erros);
+                }
             }
         }
         private async Task VincularAuxiliarAsync(IXLRow row, int linha, Responsavel responsavel, Instituicao instituicao)
