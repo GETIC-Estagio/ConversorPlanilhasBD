@@ -24,115 +24,98 @@
 
         private void InitializeComponent()
         {
-            this.btnImportar = new System.Windows.Forms.Button();
-            this.progressBarImportacao = new System.Windows.Forms.ProgressBar();
-            this.lblProgresso = new System.Windows.Forms.Label();
-            this.lblSucessos = new System.Windows.Forms.Label();
-            this.lblErros = new System.Windows.Forms.Label();
-            this.lblTituloErros = new System.Windows.Forms.Label();
-            this.lstErros = new System.Windows.Forms.ListBox();
-
-            this.SuspendLayout();
-
+            btnImportar = new Button();
+            progressBarImportacao = new ProgressBar();
+            lblProgresso = new Label();
+            lblSucessos = new Label();
+            lblErros = new Label();
+            lblTituloErros = new Label();
+            lstErros = new ListBox();
+            SuspendLayout();
             // 
             // btnImportar
             // 
-            this.btnImportar.Location = new System.Drawing.Point(30, 30);
-            this.btnImportar.Name = "btnImportar";
-            this.btnImportar.Size = new System.Drawing.Size(150, 40);
-            this.btnImportar.TabIndex = 0;
-            this.btnImportar.Text = "Importar";
-            this.btnImportar.UseVisualStyleBackColor = true;
-            this.btnImportar.Click += new System.EventHandler(this.btnImportar_Click);
-
+            btnImportar.Location = new Point(30, 30);
+            btnImportar.Name = "btnImportar";
+            btnImportar.Size = new Size(150, 40);
+            btnImportar.TabIndex = 0;
+            btnImportar.Text = "Importar";
+            btnImportar.UseVisualStyleBackColor = true;
+            btnImportar.Click += btnImportar_Click;
             // 
             // progressBarImportacao
             // 
-            this.progressBarImportacao.Location = new System.Drawing.Point(30, 95);
-            this.progressBarImportacao.Name = "progressBarImportacao";
-            this.progressBarImportacao.Size = new System.Drawing.Size(740, 25);
-            this.progressBarImportacao.TabIndex = 1;
-
+            progressBarImportacao.Location = new Point(30, 95);
+            progressBarImportacao.Name = "progressBarImportacao";
+            progressBarImportacao.Size = new Size(740, 25);
+            progressBarImportacao.TabIndex = 1;
             // 
             // lblProgresso
             // 
-            this.lblProgresso.AutoSize = true;
-            this.lblProgresso.Location = new System.Drawing.Point(30, 135);
-            this.lblProgresso.Name = "lblProgresso";
-            this.lblProgresso.Size = new System.Drawing.Size(78, 15);
-            this.lblProgresso.TabIndex = 2;
-            this.lblProgresso.Text = "Iniciando...";
-
+            lblProgresso.AutoSize = true;
+            lblProgresso.Location = new Point(30, 135);
+            lblProgresso.Name = "lblProgresso";
+            lblProgresso.Size = new Size(56, 15);
+            lblProgresso.TabIndex = 2;
+            lblProgresso.Text = "Iniciando";
             // 
             // lblSucessos
             // 
-            this.lblSucessos.AutoSize = true;
-            this.lblSucessos.Location = new System.Drawing.Point(30, 170);
-            this.lblSucessos.Name = "lblSucessos";
-            this.lblSucessos.Size = new System.Drawing.Size(76, 15);
-            this.lblSucessos.TabIndex = 3;
-            this.lblSucessos.Text = "Sucessos: 0";
-
+            lblSucessos.AutoSize = true;
+            lblSucessos.Location = new Point(30, 170);
+            lblSucessos.Name = "lblSucessos";
+            lblSucessos.Size = new Size(66, 15);
+            lblSucessos.TabIndex = 3;
+            lblSucessos.Text = "Sucessos: 0";
             // 
             // lblErros
             // 
-            this.lblErros.AutoSize = true;
-            this.lblErros.Location = new System.Drawing.Point(180, 170);
-            this.lblErros.Name = "lblErros";
-            this.lblErros.Size = new System.Drawing.Size(51, 15);
-            this.lblErros.TabIndex = 4;
-            this.lblErros.Text = "Erros: 0";
-
+            lblErros.AutoSize = true;
+            lblErros.Location = new Point(180, 170);
+            lblErros.Name = "lblErros";
+            lblErros.Size = new Size(45, 15);
+            lblErros.TabIndex = 4;
+            lblErros.Text = "Erros: 0";
             // 
             // lblTituloErros
             // 
-            this.lblTituloErros.AutoSize = true;
-            this.lblTituloErros.Font = new System.Drawing.Font(
-                "Segoe UI",
-                9F,
-                System.Drawing.FontStyle.Bold,
-                System.Drawing.GraphicsUnit.Point
-            );
-            this.lblTituloErros.Location = new System.Drawing.Point(30, 215);
-            this.lblTituloErros.Name = "lblTituloErros";
-            this.lblTituloErros.Size = new System.Drawing.Size(104, 15);
-            this.lblTituloErros.TabIndex = 5;
-            this.lblTituloErros.Text = "Erros encontrados:";
-
+            lblTituloErros.AutoSize = true;
+            lblTituloErros.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblTituloErros.Location = new Point(30, 215);
+            lblTituloErros.Name = "lblTituloErros";
+            lblTituloErros.Size = new Size(110, 15);
+            lblTituloErros.TabIndex = 5;
+            lblTituloErros.Text = "Erros encontrados:";
             // 
             // lstErros
             // 
-            this.lstErros.HorizontalScrollbar = true;
-            this.lstErros.FormattingEnabled = true;
-            this.lstErros.ItemHeight = 15;
-            this.lstErros.Location = new System.Drawing.Point(30, 245);
-            this.lstErros.Name = "lstErros";
-            this.lstErros.Size = new System.Drawing.Size(740, 274);
-            this.lstErros.TabIndex = 6;
-
+            lstErros.FormattingEnabled = true;
+            lstErros.HorizontalScrollbar = true;
+            lstErros.Location = new Point(30, 245);
+            lstErros.Name = "lstErros";
+            lstErros.Size = new Size(740, 274);
+            lstErros.TabIndex = 6;
             // 
             // FormImportacao
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 550);
-
-            this.Controls.Add(this.lstErros);
-            this.Controls.Add(this.lblTituloErros);
-            this.Controls.Add(this.lblErros);
-            this.Controls.Add(this.lblSucessos);
-            this.Controls.Add(this.lblProgresso);
-            this.Controls.Add(this.progressBarImportacao);
-            this.Controls.Add(this.btnImportar);
-
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.Name = "FormImportacao";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Importação de Dados";
-
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 550);
+            Controls.Add(lstErros);
+            Controls.Add(lblTituloErros);
+            Controls.Add(lblErros);
+            Controls.Add(lblSucessos);
+            Controls.Add(lblProgresso);
+            Controls.Add(progressBarImportacao);
+            Controls.Add(btnImportar);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            Name = "FormImportacao";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Importação de Dados";
+            Load += FormImportacao_Load;
+            ResumeLayout(false);
+            PerformLayout();
         }
     }
 }

@@ -136,7 +136,7 @@ namespace ConversorPlanilhaBD
                 // FINALIZAÇÃO
                 // --------------------------------------------
 
-                progressBarImportacao.Value = 100;
+                //  progressBarImportacao.Value = 100;
 
                 lblProgresso.Text =
                     "Importação concluída";
@@ -175,6 +175,11 @@ namespace ConversorPlanilhaBD
             {
                 btnImportar.Enabled = true;
             }
+        }
+
+        private void FormImportacao_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
